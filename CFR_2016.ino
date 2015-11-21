@@ -1,6 +1,9 @@
-
-#include <Servo.h>
-#include "CRobot.h"
+#include "sources/CRobot.cpp"
+#include "sources/CCapteur_IR.cpp"
+#include "sources/CEncodeur.cpp"
+#include "sources/CLocomotion.cpp"
+#include "sources/CMoteur.cpp"
+#include "sources/CTirette.cpp"
 
 
 CRobot robot;
