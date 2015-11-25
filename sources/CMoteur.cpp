@@ -24,8 +24,8 @@ CMoteur::CMoteur(int dirPin1, int dirPin2, int pwmPin, int maxPower)
     m_power = 0;
     m_maxPower = maxPower;
     pinMode(m_pwmPin, OUTPUT);
-      pinMode(m_dirPin1, OUTPUT);
-      pinMode(m_dirPin2, OUTPUT);
+    pinMode(m_dirPin1, OUTPUT);
+    pinMode(m_dirPin2, OUTPUT);
     updatePower(m_power);
 }
 
@@ -54,4 +54,5 @@ void CMoteur::updatePower(int power)
      Serial.println(m_power);
   }
   analogWrite(m_pwmPin,m_power);
+  Serial.println(m_power);
 }

@@ -105,13 +105,13 @@ int CLocomotion::getCurrentTheta()
 void CLocomotion::lAvancer(int speed)
 {
   m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(speed);
+  m_moteurG.updatePower(1.16*speed);
 }
 
 void CLocomotion::lTourner(int speed)
 {
   m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(-speed);
+  m_moteurG.updatePower(-1.16*speed);
 }
 
 void CLocomotion::printLPulses()
@@ -119,7 +119,9 @@ void CLocomotion::printLPulses()
   Serial.print("Encodeur D : ");
   m_encodeurD.printPulse();
   Serial.print("Encodeur G : ");
-  m_encodeurG.printPulse();   
+  m_encodeurG.printPulse();
+  Serial.print("Difference : ");
+  Serial.println(abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()));   
 }
 
 void CLocomotion::locomotionA1Interrupt()

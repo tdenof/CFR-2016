@@ -16,6 +16,7 @@ void CRobot::initRobot()
     m_servo.write(0);
     m_capteurIR.initCapteur();
     m_tirette.initTirette();
+    m_locomotion.lAvancer(0);
 
 }
 
