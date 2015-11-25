@@ -24,7 +24,7 @@ void loop()
   robot.avancer(200);
   delay(1000);
   robot.printPulses();
- /* robot.avancer(0);
+  robot.avancer(0);
   delay(1500);
   robot.tourner(120);
   delay(3000);
@@ -40,7 +40,6 @@ void loop()
   delay(3000);
   robot.printPulses();
   robot.avancer(0);
-  delay(1000);*/
 }
 
 void interruptionA1()
