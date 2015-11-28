@@ -20,7 +20,7 @@ void setup()
 
 void loop()
 {
-  delay(1000);
+  delay(1000); //
   robot.avancer(200);
   delay(1000);
   robot.printPulses();
