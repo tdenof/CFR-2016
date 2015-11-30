@@ -16,7 +16,7 @@ void CRobot::initRobot()
     m_servo.write(0);
     m_capteurIR.initCapteur();
     m_tirette.initTirette();
-    m_locomotion.lAvancer(0);
+    m_locomotion.lStop();
 
 }
 
@@ -45,14 +45,19 @@ void CRobot::printTirette()
   m_tirette.printEtat();
 }
 
-void CRobot::avancer(int speed)
+void CRobot::avancer(unsigned int distance, int speed)
 {
-  m_locomotion.lAvancer(speed);
+  m_locomotion.lAvancer(distance, speed);
 }
 
-void CRobot::tourner(int speed)
+void CRobot::turn(unsigned int angle, int speed)
 {
-  m_locomotion.lTourner(speed);
+  m_locomotion.lTurn(angle, speed);
+}
+
+void CRobot::stop()
+{
+  m_locomotion.lStop();
 }
 
 void CRobot::printPulses()

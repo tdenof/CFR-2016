@@ -1,8 +1,8 @@
 #ifndef CONSTANTES_H
 #define CONSTANTES_H
 
-#define PI 3.14
-
+#define WHEEL_DIAMETER 125L
+#define BASE_DIAMETER 200L
 #define PIN_TIRETTE 22
 #define PIN_CAPTEUR A2
 #define PIN_SERVO 12

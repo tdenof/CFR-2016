@@ -20,26 +20,28 @@ void setup()
 
 void loop()
 {
-  delay(1000);
-  robot.avancer(200);
-  delay(1000);
+  delay(2000);
   robot.printPulses();
-  robot.avancer(0);
+  delay(3000);
+  robot.turn(360,80);
+  delay(5000);
+ robot.printPulses();
+ /*  robot.stop();
   delay(1500);
   robot.tourner(120);
   delay(3000);
   robot.printPulses();
-  robot.avancer(0);
+  robot.stop();
   delay(1000);
-  robot.avancer(-200);
+  robot.avancer(500,-200);
   delay(3000);
   robot.printPulses();
-  robot.avancer(0);
+  robot.stop();
   delay(1500);
   robot.tourner(-120);
   delay(3000);
   robot.printPulses();
-  robot.avancer(0);
+  robot.stop();*/
 }
 
 void interruptionA1()

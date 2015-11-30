@@ -17,8 +17,9 @@ class CRobot
         int capteurIRValeur();
         void printCapteurIR();
         void printTirette();
-        void avancer(int speed);
-        void tourner(int speed);
+        void avancer(unsigned int distance, int speed);
+        void turn(unsigned int angle, int speed);
+        void stop();
         void printPulses();
         void robotA1Interrupt();
         void robotB1Interrupt();
