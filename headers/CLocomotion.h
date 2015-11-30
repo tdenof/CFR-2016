@@ -31,7 +31,7 @@ class CLocomotion
         int getCurrentTheta();
         etatLocomotion getCurrentPosition();
         void lAvancer(unsigned int distance, int speed);
-        void lTourner(int speed);
+        void lTurn(unsigned int angle, int speed);
         void lStop();
         void printLPulses();
         void locomotionA1Interrupt();

@@ -21,12 +21,9 @@ void setup()
 void loop()
 {
   delay(2000);
-  int u = 2000;
-  Serial.println(u*360L);
-  delay(1000);
   robot.printPulses();
   delay(3000);
-  robot.avancer(2000,200);
+  robot.turn(360,80);
   delay(5000);
  robot.printPulses();
  /*  robot.stop();

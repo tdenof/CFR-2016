@@ -123,17 +123,45 @@ void CLocomotion::lAvancer (unsigned int distance, int speed)
     mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
     delay(10);
   }
+  m_moteurD.updatePower(0);
+  m_moteurG.updatePower(0);
   Serial.print("FIN : mPulses = ");
   Serial.println(mPulses);
   delay(1000);
-  m_moteurD.updatePower(0);
-  m_moteurG.updatePower(0);
 } 
 
-void CLocomotion::lTourner(int speed)
+void CLocomotion::lTurn (unsigned int angle, int speed)
 {
+  int i;
+  unsigned int dPulses = angle*BASE_DIAMETER/WHEEL_DIAMETER;
+  Serial.print("dPulses = ");
+  Serial.println(dPulses);
+  delay(1000);
+  unsigned int mPulses = (m_encodeurD.pulseCountValue() + m_encodeurG.pulseCountValue())/2;
+  Serial.print("mPulses = ");
+  Serial.println(mPulses);
+  delay(1000);
+  unsigned int fPulses = mPulses + abs(dPulses);
+  Serial.print("fPulses = ");
+  Serial.println(fPulses);
+  if (angle == 0) return;
   m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(-1.16*speed);
+  m_moteurG.updatePower(-speed);
+  while(mPulses < fPulses){
+    mPulses = (m_encodeurD.pulseCountValue() + m_encodeurG.pulseCountValue())/2;
+    delay(10);
+   }
+  m_moteurD.updatePower(0);
+  m_moteurG.updatePower(0);
+  for (i=0;i<10;i++){
+    printLPulses();
+    delay(50);
+  }
+  Serial.print("FIN : mPulses = ");
+  Serial.println(mPulses);
+  delay(1000);
+  printLPulses();
+  delay(1000);
 }
 
 void CLocomotion::lStop()
