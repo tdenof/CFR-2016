@@ -19,6 +19,7 @@ class CRobot
         void printTirette();
         void avancer(int speed);
         void tourner(int speed);
+        void stop();
         void printPulses();
         void robotA1Interrupt();
         void robotB1Interrupt();

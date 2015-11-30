@@ -55,6 +55,11 @@ void CRobot::tourner(int speed)
   m_locomotion.lTourner(speed);
 }
 
+void CRobot::stop()
+{
+  m_locomotion.lStop();
+}
+
 void CRobot::printPulses()
 {
   m_locomotion.printLPulses();  

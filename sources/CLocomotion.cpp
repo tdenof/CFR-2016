@@ -102,16 +102,32 @@ int CLocomotion::getCurrentTheta()
     return m_etat.theta;
 }
 
-void CLocomotion::lAvancer(int speed)
+void Clocomotion::lAvancer (unsigned int distance, int vitesse)
 {
+  unsigned int dPulses = 2*distance/WHEEL_DIAMETER;
+  unsigned int mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+  unsigned nit fPulses = mPulses + dPulses;
+  if (distance == 0) return;
   m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(1.16*speed);
-}
+    m_moteurG.updatePower(1.16*speed);
+    while(mPulses < fPulses){
+      mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+      delay(10);
+    }
+    m_moteurD.updatePower(0);
+    m_moteurG.updatePower(0);
+} 
 
 void CLocomotion::lTourner(int speed)
 {
   m_moteurD.updatePower(speed);
   m_moteurG.updatePower(-1.16*speed);
+}
+
+void CLocomotion::lStop()
+{
+  m_moteurD.updatePower(0);
+  m_moteurG.updatePower(0);
 }
 
 void CLocomotion::printLPulses()
