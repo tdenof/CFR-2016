@@ -106,7 +106,7 @@ void Clocomotion::lAvancer (unsigned int distance, int vitesse)
 {
   unsigned int dPulses = 2*distance/WHEEL_DIAMETER;
   unsigned int mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-  unsigned nit fPulses = mPulses + dPulses;
+  unsigned int fPulses = mPulses + dPulses;
   if (distance == 0) return;
   m_moteurD.updatePower(speed);
     m_moteurG.updatePower(1.16*speed);
