@@ -20,26 +20,31 @@ void setup()
 
 void loop()
 {
-  delay(1000);
-  robot.avancer(200);
+  delay(2000);
+  int u = 2000;
+  Serial.println(u*360L);
   delay(1000);
   robot.printPulses();
-  robot.avancer(0);
+  delay(3000);
+  robot.avancer(2000,200);
+  delay(5000);
+ robot.printPulses();
+ /*  robot.stop();
   delay(1500);
   robot.tourner(120);
   delay(3000);
   robot.printPulses();
-  robot.avancer(0);
+  robot.stop();
   delay(1000);
-  robot.avancer(-200);
+  robot.avancer(500,-200);
   delay(3000);
   robot.printPulses();
-  robot.avancer(0);
+  robot.stop();
   delay(1500);
   robot.tourner(-120);
   delay(3000);
   robot.printPulses();
-  robot.avancer(0);
+  robot.stop();*/
 }
 
 void interruptionA1()

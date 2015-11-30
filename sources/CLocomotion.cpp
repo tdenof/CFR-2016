@@ -102,20 +102,32 @@ int CLocomotion::getCurrentTheta()
     return m_etat.theta;
 }
 
-void Clocomotion::lAvancer (unsigned int distance, int vitesse)
+void CLocomotion::lAvancer (unsigned int distance, int speed)
 {
-  unsigned int dPulses = 2*distance/WHEEL_DIAMETER;
+  unsigned int dPulses = 360L*distance/(PI*WHEEL_DIAMETER);
+  Serial.print("dPulses = ");
+  Serial.println(dPulses);
+  delay(1000);
   unsigned int mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+  Serial.print("mPulses = ");
+  Serial.println(mPulses);
+  delay(1000);
   unsigned int fPulses = mPulses + dPulses;
+  Serial.print("fPulses = ");
+  Serial.println(fPulses);
+  delay(1000);
   if (distance == 0) return;
   m_moteurD.updatePower(speed);
-    m_moteurG.updatePower(1.16*speed);
-    while(mPulses < fPulses){
-      mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-      delay(10);
-    }
-    m_moteurD.updatePower(0);
-    m_moteurG.updatePower(0);
+  m_moteurG.updatePower(1.16*speed);
+  while(mPulses < fPulses){
+    mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    delay(10);
+  }
+  Serial.print("FIN : mPulses = ");
+  Serial.println(mPulses);
+  delay(1000);
+  m_moteurD.updatePower(0);
+  m_moteurG.updatePower(0);
 } 
 
 void CLocomotion::lTourner(int speed)

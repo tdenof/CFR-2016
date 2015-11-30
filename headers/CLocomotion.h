@@ -30,8 +30,9 @@ class CLocomotion
         int getCurrentY();
         int getCurrentTheta();
         etatLocomotion getCurrentPosition();
-        void lAvancer(unsigned int distance, int vitesse);
+        void lAvancer(unsigned int distance, int speed);
         void lTourner(int speed);
+        void lStop();
         void printLPulses();
         void locomotionA1Interrupt();
         void locomotionB1Interrupt();
