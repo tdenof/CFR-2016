@@ -93,10 +93,12 @@ int CLocomotion::getCurrentX()
 {
     return m_etat.x;
 }
+
 int CLocomotion::getCurrentY()
 {
     return m_etat.y;
 }
+
 int CLocomotion::getCurrentTheta()
 {
     return m_etat.theta;
@@ -178,6 +180,51 @@ void CLocomotion::printLPulses()
   m_encodeurG.printPulse();
   Serial.print("Difference : ");
   Serial.println(abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()));   
+}
+
+void CLocomotion::callback_sensors()
+{
+  long pulses_moy = (abs(m_encodeurD.pulseCountValue())+abs(m_encodeurG.pulseCountValue()))/2; // moy pulses
+  resetPulses(); // set pulses to 0
+  updateEtat(pulses_moy);
+ 
+}
+
+void resetPulses()
+{
+  m_encodeurD.reset();
+  m_encodeurG.reset();
+}
+
+void updateEtat(long pulses)
+{
+  updateCurrentSpeed(pulses);
+  if (flag == 1) {
+    unsigned int distance = pulses*(PI*WHEEL_DIAMETER)/360L;
+    updatePos();
+  }
+
+  if (flag == 2) {
+    unsigned int angle = pulses*WHEEL_DIAMETER/BASE_DIAMETER;
+    updateAngle(theta);
+  }
+}
+
+void updateCurrentSpeed(long pulses)
+{
+  int speed = convertToTension(pulses);
+  m_etat.speed = speed;
+}
+
+void updatePos(unsigned int distance)
+{
+  m_etat.x += distance*cos(getCurrentTheta());
+  m_etat.y += distance*sin(getCurrentTheta());
+}
+
+void updateAngle(unsigned int angle)
+{
+  m_etat.theta += angle;
 }
 
 void CLocomotion::locomotionA1Interrupt()
