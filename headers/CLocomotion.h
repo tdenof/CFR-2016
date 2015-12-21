@@ -30,7 +30,8 @@ class CLocomotion
         int getCurrentX();
         int getCurrentY();
         int getCurrentTheta();
-        etatLocomotion getCurrentPosition();
+        int getCurrentSpeed();
+        etatLocomotion getCurrentState();
         void lAvancer(unsigned int distance, int speed);
         void lTurn(unsigned int angle, int speed);
         void lStop();
