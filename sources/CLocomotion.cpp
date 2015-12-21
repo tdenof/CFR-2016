@@ -190,13 +190,13 @@ void CLocomotion::callback_sensors()
  
 }
 
-void resetPulses()
+void CLocomotion::resetPulses()
 {
   m_encodeurD.reset();
   m_encodeurG.reset();
 }
 
-void updateEtat(long pulses)
+void CLocomotion::updateEtat(long pulses)
 {
   updateCurrentSpeed(pulses);
   if (flag == 1) {
@@ -210,19 +210,19 @@ void updateEtat(long pulses)
   }
 }
 
-void updateCurrentSpeed(long pulses)
+void CLocomotion::updateCurrentSpeed(long pulses)
 {
   int speed = convertToTension(pulses);
   m_etat.speed = speed;
 }
 
-void updatePos(unsigned int distance)
+void CLocomotion::updatePos(unsigned int distance)
 {
   m_etat.x += distance*cos(getCurrentTheta());
   m_etat.y += distance*sin(getCurrentTheta());
 }
 
-void updateAngle(unsigned int angle)
+void CLocomotion::updateAngle(unsigned int angle)
 {
   m_etat.theta += angle;
 }
