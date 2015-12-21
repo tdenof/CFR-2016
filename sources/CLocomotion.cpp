@@ -22,10 +22,10 @@ etatLocomotion CLocomotion::goTo(int x, int y)
 {
 
 }
-etatLocomotion CLocomotion::getCurrentPosition()
+etatLocomotion CLocomotion::getCurrentState()
 {
     etatLocomotion pos;
-    pos = {getCurrentX(),getCurrentY(),getCurrentTheta()};
+    pos = {getCurrentX(),getCurrentY(),getCurrentTheta(),getCurrentSpeed()};
     return pos;
 }
 
@@ -104,6 +104,10 @@ int CLocomotion::getCurrentTheta()
     return m_etat.theta;
 }
 
+int CLocomotion::getCurrentSpeed()
+{
+    return m_etat.speed;
+}
 void CLocomotion::lAvancer (unsigned int distance, int speed)
 {
   unsigned int dPulses = 360L*distance/(PI*WHEEL_DIAMETER);
