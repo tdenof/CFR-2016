@@ -6,7 +6,8 @@
 CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT}), 
 m_moteurD(PIN_M1IN1,PIN_M1IN2,PIN_M1PWM), 
 m_moteurG(PIN_M2IN1,PIN_M2IN2,PIN_M2PWM), 
-m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2)
+m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2), 
+m_speedConsigne(0)
 {
    //ctor
    
@@ -192,6 +193,16 @@ void CLocomotion::callback_sensors()
   resetPulses(); // set pulses to 0
   updateEtat(pulses_moy);
  
+}
+
+void CLocomotion::callback_control()
+{
+    int speedError = m_speedConsigne - m_etat.speed; //error
+    m_speedErrorSum += speedError; //integration
+    int speedErrorDerivative = 0// action derivee
+    int command = KP * speedError + KI * m_speedConsigneSum + KD * speedErrorDerivative;
+    m_moteurG.updatePower(command);
+    m_moteurD.updatePower(command);
 }
 
 void CLocomotion::resetPulses()

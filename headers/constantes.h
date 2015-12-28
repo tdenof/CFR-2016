@@ -26,4 +26,8 @@
 #define PIN_A2 20		//gauche
 #define PIN_B2 21
 
+//Control
+#define KP 1
+#define KI	0
+#define KD	0
 #endif // CONSTANTES_H

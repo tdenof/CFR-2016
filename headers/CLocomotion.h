@@ -37,6 +37,7 @@ class CLocomotion
         void lStop();
         void printLPulses();
         void callback_sensors();
+        void callback_control();
         void resetPulses();
         void updateEtat(long pulses);
         void updateCurrentSpeed(long pulses);
@@ -58,7 +59,8 @@ class CLocomotion
         bool traverseZoneInterdite(int distance);
         CMoteur m_moteurD, m_moteurG;
         CEncodeur m_encodeurD, m_encodeurG;
-        long m_speed;
+        int m_speedConsigne;
+        long m_speedErrorSum;
 
 
 
