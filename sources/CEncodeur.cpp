@@ -18,7 +18,7 @@ CEncodeur::~CEncodeur()
 }
 
 
-long CEncodeur::pulseCountValue()
+long CEncodeur::getPulseCount()
 {
   return m_pulseCount;
 }
@@ -34,6 +34,11 @@ void CEncodeur::printPistes()
   Serial.println(m_pisteAValue);
   Serial.print("Piste B : ") ;
   Serial.println(m_pisteBValue);
+}
+
+void CEncodeur::reset()
+{
+  m_pulseCount=0;
 }
 
 void CEncodeur::pisteAInterrupt()

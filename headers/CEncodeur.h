@@ -7,9 +7,10 @@ class CEncodeur
 	public:
 		CEncodeur(int pisteAPin, int pisteBPin);
 		virtual ~CEncodeur();
-		long pulseCountValue(); // retourne la valeur du compteur
+		long getPulseCount(); // retourne la valeur du compteur
 		void printPulse();
 		void printPistes();
+		void reset();
    	//traitement des interruptions
     void pisteAInterrupt();
     void pisteBInterrupt();	

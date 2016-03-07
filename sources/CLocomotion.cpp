@@ -110,11 +110,11 @@ int CLocomotion::getCurrentSpeed()
 }
 void CLocomotion::lAvancer (unsigned int distance, int speed)
 {
-  unsigned int dPulses = 360L*distance/(PI*WHEEL_DIAMETER);
+  unsigned int dPulses = (int)(360L*distance/(PI*WHEEL_DIAMETER));
   Serial.print("dPulses = ");
   Serial.println(dPulses);
   delay(1000);
-  unsigned int mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+  unsigned int mPulses = (abs(m_encodeurD.getPulseCount()) + abs(m_encodeurG.getPulseCount()))/2;
   Serial.print("mPulses = ");
   Serial.println(mPulses);
   delay(1000);
@@ -126,7 +126,7 @@ void CLocomotion::lAvancer (unsigned int distance, int speed)
   m_moteurD.updatePower(speed);
   m_moteurG.updatePower(1.16*speed);
   while(mPulses < fPulses){
-    mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    mPulses = (abs(m_encodeurD.getPulseCount()) + abs(m_encodeurG.getPulseCount()))/2;
     delay(10);
   }
   m_moteurD.updatePower(0);
@@ -143,7 +143,7 @@ void CLocomotion::lTurn (unsigned int angle, int speed)
   Serial.print("dPulses = ");
   Serial.println(dPulses);
   delay(1000);
-  unsigned int mPulses = (m_encodeurD.pulseCountValue() + m_encodeurG.pulseCountValue())/2;
+  unsigned int mPulses = (m_encodeurD.getPulseCount() + m_encodeurG.getPulseCount())/2;
   Serial.print("mPulses = ");
   Serial.println(mPulses);
   delay(1000);
@@ -154,7 +154,7 @@ void CLocomotion::lTurn (unsigned int angle, int speed)
   m_moteurD.updatePower(speed);
   m_moteurG.updatePower(-speed);
   while(mPulses < fPulses){
-    mPulses = (m_encodeurD.pulseCountValue() + m_encodeurG.pulseCountValue())/2;
+    mPulses = (m_encodeurD.getPulseCount() + m_encodeurG.getPulseCount())/2;
     delay(10);
    }
   m_moteurD.updatePower(0);
@@ -183,12 +183,12 @@ void CLocomotion::printLPulses()
   Serial.print("Encodeur G : ");
   m_encodeurG.printPulse();
   Serial.print("Difference : ");
-  Serial.println(abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()));   
+  Serial.println(abs(m_encodeurD.getPulseCount()) - abs(m_encodeurG.getPulseCount()));   
 }
 
 void CLocomotion::callback_sensors()
 {
-  long pulses_moy = (abs(m_encodeurD.pulseCountValue())+abs(m_encodeurG.pulseCountValue()))/2; // moy pulses
+  long pulses_moy = (abs(m_encodeurD.getPulseCount())+abs(m_encodeurG.getPulseCount()))/2; // moy pulses
   resetPulses(); // set pulses to 0
   updateEtat(pulses_moy);
  
@@ -205,12 +205,12 @@ void CLocomotion::updateEtat(long pulses)
   updateCurrentSpeed(pulses);
   if (flag == 1) {
     unsigned int distance = pulses*(PI*WHEEL_DIAMETER)/360L;
-    updatePos();
+    updatePos(distance);
   }
 
   if (flag == 2) {
     unsigned int angle = pulses*WHEEL_DIAMETER/BASE_DIAMETER;
-    updateAngle(theta);
+    updateAngle(angle);
   }
 }
 
