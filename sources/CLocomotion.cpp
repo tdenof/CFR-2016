@@ -124,11 +124,22 @@ void CLocomotion::lAvancer (unsigned int distance, int speed)
   Serial.println(fPulses);
   delay(1000);
   if (distance == 0) return;
-  m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(1.16*speed);
+  int err = 0;
+  int sErr = 0;
+  int dErr = 0;
+  int pErr = 0;
+  int command = 0;
   while(mPulses < fPulses){
     mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-    delay(10);
+    err = fPulses - mPulses;
+    sErr += err;
+    dErr = err - pErr;
+    command = KP*err + KI*sErr + KD*dErr;
+    Serial.println(command);
+    m_moteurG.updatePower(command);
+    m_moteurD.updatePower(command);
+    pErr = err;
+    delay(20);
   }
   m_moteurD.updatePower(0);
   m_moteurG.updatePower(0);
@@ -199,36 +210,36 @@ void CLocomotion::callback_control()
 {
     int speedError = m_speedConsigne - m_etat.speed; //error
     m_speedErrorSum += speedError; //integration
-    int speedErrorDerivative = 0// action derivee
-    int command = KP * speedError + KI * m_speedConsigneSum + KD * speedErrorDerivative;
+    int speedErrorDerivative = 0;// action derivee
+    int command = 0;
     m_moteurG.updatePower(command);
     m_moteurD.updatePower(command);
 }
 
 void CLocomotion::resetPulses()
 {
-  m_encodeurD.reset();
-  m_encodeurG.reset();
+  // m_encodeurD.reset();
+  // m_encodeurG.reset();
 }
 
 void CLocomotion::updateEtat(long pulses)
 {
   updateCurrentSpeed(pulses);
-  if (flag == 1) {
-    unsigned int distance = pulses*(PI*WHEEL_DIAMETER)/360L;
-    updatePos();
-  }
+  // if (flag == 1) {
+  //   unsigned int distance = pulses*(PI*WHEEL_DIAMETER)/360L;
+  //   updatePos(distance);
+  // }
 
-  if (flag == 2) {
-    unsigned int angle = pulses*WHEEL_DIAMETER/BASE_DIAMETER;
-    updateAngle(theta);
-  }
+  // if (flag == 2) {
+  //   unsigned int angle = pulses*WHEEL_DIAMETER/BASE_DIAMETER;
+  //   updateAngle(theta);
+  // }
 }
 
 void CLocomotion::updateCurrentSpeed(long pulses)
 {
-  int speed = convertToTension(pulses);
-  m_etat.speed = speed;
+  // int speed = convertToTension(pulses);
+  // m_etat.speed = speed;
 }
 
 void CLocomotion::updatePos(unsigned int distance)
