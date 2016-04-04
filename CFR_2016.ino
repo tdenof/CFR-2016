@@ -1,9 +1,9 @@
-#include "sources/CRobot.cpp"
-#include "sources/CCapteur_IR.cpp"
-#include "sources/CEncodeur.cpp"
-#include "sources/CLocomotion.cpp"
-#include "sources/CMoteur.cpp"
-#include "sources/CTirette.cpp"
+#include "headers/CRobot.h"
+#include "headers/CCapteur_IR.h"
+#include "headers/CEncodeur.h"
+#include "headers/CLocomotion.h"
+#include "headers/CMoteur.h"
+#include "headers/CTirette.h"
 
 
 CRobot robot;
@@ -20,26 +20,11 @@ void setup()
 
 void loop()
 {
-  delay(1000);
   robot.avancer(200);
-  delay(1000);
-  robot.printPulses();
-  robot.avancer(0);
-  delay(1500);
-  robot.tourner(120);
-  delay(3000);
-  robot.printPulses();
-  robot.avancer(0);
-  delay(1000);
-  robot.avancer(-200);
-  delay(3000);
-  robot.printPulses();
-  robot.avancer(0);
-  delay(1500);
-  robot.tourner(-120);
-  delay(3000);
-  robot.printPulses();
-  robot.avancer(0);
+  while(1){
+    robot.printPulses();
+    delay(1500);
+  }
 }
 
 void interruptionA1()

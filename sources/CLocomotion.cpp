@@ -105,7 +105,7 @@ int CLocomotion::getCurrentTheta()
 void CLocomotion::lAvancer(int speed)
 {
   m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(1.16*speed);
+  m_moteurG.updatePower(speed);
 }
 
 void CLocomotion::lTourner(int speed)
