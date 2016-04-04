@@ -20,11 +20,8 @@ void setup()
 
 void loop()
 {
-  delay(2000);
-  robot.avancer(1000,100);
-  while(1){
-    
-  }
+  robot.printPulses();
+  delay(500);
 }
 
 void interruptionA1()

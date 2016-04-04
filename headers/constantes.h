@@ -20,7 +20,8 @@
 #define PIN_M2IN2 9
 #define PIN_M2PWM 10
 
-//encodeurs
+//encodeurs	gris : VCC - rouge : GND - marron : A - B : violet
+// switch A and B connectics for 2nd encoder
 #define PIN_A1 18		// droite
 #define PIN_B1 19
 #define PIN_A2 20		//gauche
