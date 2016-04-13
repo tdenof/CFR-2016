@@ -31,4 +31,5 @@
 #define KP 1
 #define KI	0
 #define KD	0
+#define SPEEDMAX 130
 #endif // CONSTANTES_H

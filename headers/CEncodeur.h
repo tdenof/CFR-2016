@@ -10,6 +10,7 @@ class CEncodeur
 		long pulseCountValue(); // retourne la valeur du compteur
 		void printPulse();
 		void printPistes();
+		void reset();
    	//traitement des interruptions
     void pisteAInterrupt();
     void pisteBInterrupt();	

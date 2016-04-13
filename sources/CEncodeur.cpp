@@ -36,6 +36,11 @@ void CEncodeur::printPistes()
   Serial.println(m_pisteBValue);
 }
 
+void CEncodeur::reset()
+{
+  m_pulseCount = 0;
+}
+
 void CEncodeur::pisteAInterrupt()
 {
   if (digitalRead(m_pisteAPin) == HIGH) {

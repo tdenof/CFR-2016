@@ -84,3 +84,12 @@ void CRobot::robotB2Interrupt()
 {
   m_locomotion.locomotionB2Interrupt();
 }
+
+void CRobot::robotPositionControl()
+{
+  m_locomotion.locomotionPositionControl();
+}
+
+void CRobot::robotSpeedControl(){
+  m_locomotion.locomotionSpeedControl();
+}

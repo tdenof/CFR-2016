@@ -25,6 +25,8 @@ class CRobot
         void robotB1Interrupt();
         void robotA2Interrupt();
         void robotB2Interrupt();
+        void robotPositionControl();
+        void robotSpeedControl();
 
     protected:
     private:

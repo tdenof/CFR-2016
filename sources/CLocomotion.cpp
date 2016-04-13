@@ -1,4 +1,6 @@
 #include "../headers/CLocomotion.h"
+#include "../headers/TimerThree.h"
+#include "../headers/TimerFour.h"
 
 #include "../headers/zoneInterdite.h"
 #include <Arduino.h>
@@ -7,7 +9,7 @@ CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT}),
 m_moteurD(PIN_M1IN1,PIN_M1IN2,PIN_M1PWM), 
 m_moteurG(PIN_M2IN1,PIN_M2IN2,PIN_M2PWM), 
 m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2), 
-m_speedConsigne(0)
+m_speedConsigne(0), m_speedErrorSum(0), m_speedErrorPrev(0)
 {
    //ctor
    
@@ -111,40 +113,24 @@ int CLocomotion::getCurrentSpeed()
 }
 void CLocomotion::lAvancer (unsigned int distance, int speed)
 {
-  unsigned int dPulses = 360L*distance/(PI*WHEEL_DIAMETER);
-  Serial.print("dPulses = ");
-  Serial.println(dPulses);
-  delay(1000);
-  unsigned int mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-  Serial.print("mPulses = ");
-  Serial.println(mPulses);
-  delay(1000);
-  unsigned int fPulses = mPulses + dPulses;
-  Serial.print("fPulses = ");
-  Serial.println(fPulses);
+  m_fPulses = 360L*distance/(PI*WHEEL_DIAMETER);
   delay(1000);
   if (distance == 0) return;
-  int err = 0;
-  int sErr = 0;
-  int dErr = 0;
-  int pErr = 0;
-  int command = 0;
-  while(mPulses < fPulses){
-    mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-    err = fPulses - mPulses;
-    sErr += err;
-    dErr = err - pErr;
-    command = KP*err + KI*sErr + KD*dErr;
-    Serial.println(command);
-    m_moteurG.updatePower(command);
-    m_moteurD.updatePower(command);
-    pErr = err;
+  
+  m_speedConsigne=40;
+  Timer3.start();
+  while(m_mPulses < m_fPulses){
+    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    
     delay(20);
   }
-  m_moteurD.updatePower(0);
-  m_moteurG.updatePower(0);
+  Timer4.stop();
+  Timer3.stop();
+  lStop();
+
   Serial.print("FIN : mPulses = ");
-  Serial.println(mPulses);
+  Serial.println(m_mPulses);
+  resetPulses();
   delay(1000);
 } 
 
@@ -206,20 +192,33 @@ void CLocomotion::callback_sensors()
  
 }
 
-void CLocomotion::callback_control()
+void CLocomotion::locomotionSpeedControl()
 {
     int speedError = m_speedConsigne - m_etat.speed; //error
     m_speedErrorSum += speedError; //integration
-    int speedErrorDerivative = 0;// action derivee
-    int command = 0;
+    int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
+    m_speedErrorPrev = speedError;
+    int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
     m_moteurG.updatePower(command);
     m_moteurD.updatePower(command);
 }
 
+void CLocomotion::locomotionPositionControl()
+{
+    Timer4.start();
+    if(m_speedConsigne < SPEEDMAX) m_speedConsigne+=10;
+
+}
+
 void CLocomotion::resetPulses()
 {
-  // m_encodeurD.reset();
-  // m_encodeurG.reset();
+   m_encodeurD.reset();
+   m_encodeurG.reset();
+   m_mPulses = 0;
+   m_fPulses = 0;
+   m_speedErrorPrev = 0;
+   m_speedErrorSum = 0;
+   m_speedConsigne = 40;
 }
 
 void CLocomotion::updateEtat(long pulses)
@@ -272,3 +271,4 @@ void CLocomotion::locomotionB2Interrupt()
 {
   m_encodeurG.pisteBInterrupt();
 }
+
