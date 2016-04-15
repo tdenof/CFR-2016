@@ -5,7 +5,7 @@
 #include "../headers/zoneInterdite.h"
 #include <Arduino.h>
 
-CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT}), 
+CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT,SPEED_INIT,DIR_INIT}), 
 m_moteurD(PIN_M1IN1,PIN_M1IN2,PIN_M1PWM), 
 m_moteurG(PIN_M2IN1,PIN_M2IN2,PIN_M2PWM), 
 m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2), 
@@ -111,67 +111,53 @@ int CLocomotion::getCurrentSpeed()
 {
     return m_etat.speed;
 }
-void CLocomotion::lAvancer (unsigned int distance, int speed)
+void CLocomotion::lAvancer (unsigned int distance, int dir)
 {
-  m_fPulses = 360L*distance/(PI*WHEEL_DIAMETER);
-  delay(1000);
   if (distance == 0) return;
-  
+  resetPulses();
+  m_fPulses = 360L*distance/(PI*WHEEL_DIAMETER);
+  m_etat.dir = dir;
   m_speedConsigne=40;
   Timer3.start();
-  while(m_mPulses < m_fPulses){
+  while(m_mPulses < m_fPulses && !flag){
     m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    updateEtat();
     
     delay(20);
   }
-  Timer4.stop();
   Timer3.stop();
+  Timer4.stop();
   lStop();
-
-  Serial.print("FIN : mPulses = ");
-  Serial.println(m_mPulses);
-  resetPulses();
-  delay(1000);
 } 
 
-void CLocomotion::lTurn (unsigned int angle, int speed)
+void CLocomotion::lTurn (unsigned int angle, int dir)
 {
-  int i;
-  unsigned int dPulses = angle*BASE_DIAMETER/WHEEL_DIAMETER;
-  Serial.print("dPulses = ");
-  Serial.println(dPulses);
-  delay(1000);
-  unsigned int mPulses = (m_encodeurD.pulseCountValue() + m_encodeurG.pulseCountValue())/2;
-  Serial.print("mPulses = ");
-  Serial.println(mPulses);
-  delay(1000);
-  unsigned int fPulses = mPulses + abs(dPulses);
-  Serial.print("fPulses = ");
-  Serial.println(fPulses);
   if (angle == 0) return;
-  m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(-speed);
-  while(mPulses < fPulses){
-    mPulses = (m_encodeurD.pulseCountValue() + m_encodeurG.pulseCountValue())/2;
-    delay(10);
-   }
-  m_moteurD.updatePower(0);
-  m_moteurG.updatePower(0);
-  for (i=0;i<10;i++){
-    printLPulses();
-    delay(50);
+  resetPulses();
+  m_fPulses = angle*BASE_DIAMETER/WHEEL_DIAMETER;
+  m_etat.dir = dir;
+  m_speedConsigne=40;
+  Timer3.start();
+  while(m_mPulses < m_fPulses && !flag ){
+    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    updateEtat();
+    
+    delay(20);
   }
-  Serial.print("FIN : mPulses = ");
-  Serial.println(mPulses);
-  delay(1000);
-  printLPulses();
-  delay(1000);
+  Timer3.stop();
+  Timer4.stop();
+  lStop();
 }
 
 void CLocomotion::lStop()
 {
-  m_moteurD.updatePower(0);
-  m_moteurG.updatePower(0);
+  while(m_speedConsigne > 40){
+    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    m_speedConsigne -= 5;
+    updatePower(m_speedConsigne);
+    updateEtat();
+    delay(20);
+  }
 }
 
 void CLocomotion::printLPulses()
@@ -188,7 +174,7 @@ void CLocomotion::callback_sensors()
 {
   long pulses_moy = (abs(m_encodeurD.pulseCountValue())+abs(m_encodeurG.pulseCountValue()))/2; // moy pulses
   resetPulses(); // set pulses to 0
-  updateEtat(pulses_moy);
+  updateEtat();
  
 }
 
@@ -199,17 +185,40 @@ void CLocomotion::locomotionSpeedControl()
     int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
     m_speedErrorPrev = speedError;
     int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
-    m_moteurG.updatePower(command);
-    m_moteurD.updatePower(command);
+    updatePower(command);
+    
 }
 
 void CLocomotion::locomotionPositionControl()
 {
     Timer4.start();
-    if(m_speedConsigne < SPEEDMAX) m_speedConsigne+=10;
+    if(m_fPulses - m_mPulses < 2048 && m_speedConsigne > SPEEDMIN) m_speedConsigne-=5;
+    if(m_speedConsigne < SPEEDMAX) m_speedConsigne+=5;
+    updateEtat();
 
 }
 
+void CLocomotion::updatePower(int power)
+{
+  switch (m_etat.dir){
+    case FORWARD :
+      m_moteurG.updatePower(power);
+       m_moteurD.updatePower(power);
+       break;
+     case BACKWARD :
+       m_moteurG.updatePower(-power);
+       m_moteurD.updatePower(-power);
+       break;
+     case RIGHT :
+       m_moteurG.updatePower(power);
+       m_moteurD.updatePower(-power);
+       break;
+     case LEFT :
+       m_moteurG.updatePower(-power);
+       m_moteurD.updatePower(power);
+       break;
+     }
+}
 void CLocomotion::resetPulses()
 {
    m_encodeurD.reset();
@@ -221,36 +230,43 @@ void CLocomotion::resetPulses()
    m_speedConsigne = 40;
 }
 
-void CLocomotion::updateEtat(long pulses)
+void CLocomotion::updateEtat()
 {
-  updateCurrentSpeed(pulses);
-  // if (flag == 1) {
-  //   unsigned int distance = pulses*(PI*WHEEL_DIAMETER)/360L;
-  //   updatePos(distance);
-  // }
+  // update etat speed
+  m_etat.speed = m_mPulses - m_etat.pulses ;
 
-  // if (flag == 2) {
-  //   unsigned int angle = pulses*WHEEL_DIAMETER/BASE_DIAMETER;
-  //   updateAngle(theta);
-  // }
+  //update etat pulses
+  m_etat.pulses = m_mPulses;
+
+  switch (m_etat.dir){
+
+    case FORWARD :
+      {
+        unsigned int distance = m_etat.speed*(PI*WHEEL_DIAMETER)/360L;
+        m_etat.x += distance*cos(getCurrentTheta());
+        m_etat.y += distance*sin(getCurrentTheta());
+      }
+     break;
+
+    case BACKWARD :
+      {
+        unsigned int distance = m_etat.speed*(PI*WHEEL_DIAMETER)/360L;
+        m_etat.x -= distance*cos(getCurrentTheta());
+        m_etat.y -= distance*sin(getCurrentTheta());
+      }
+      break;
+
+    case RIGHT :
+      m_etat.theta += m_etat.speed*WHEEL_DIAMETER/BASE_DIAMETER;
+      break;
+
+    case LEFT :
+      m_etat.theta -= m_etat.speed*WHEEL_DIAMETER/BASE_DIAMETER;
+      break;
+  }
 }
 
-void CLocomotion::updateCurrentSpeed(long pulses)
-{
-  // int speed = convertToTension(pulses);
-  // m_etat.speed = speed;
-}
 
-void CLocomotion::updatePos(unsigned int distance)
-{
-  m_etat.x += distance*cos(getCurrentTheta());
-  m_etat.y += distance*sin(getCurrentTheta());
-}
-
-void CLocomotion::updateAngle(unsigned int angle)
-{
-  m_etat.theta += angle;
-}
 
 void CLocomotion::locomotionA1Interrupt()
 {

@@ -10,6 +10,8 @@
 #define X_INIT 0
 #define Y_INIT 0
 #define THETA_INIT 0
+#define SPEED_INIT 0
+#define DIR_INIT 0
 #define NBZONEINTERDITE 1
 
 //moteurs
@@ -32,4 +34,13 @@
 #define KI	0
 #define KD	0
 #define SPEEDMAX 130
+#define SPEEDMIN 60
+
+//direction
+#define FORWARD 1
+#define BACKWARD -1
+#define RIGHT 2
+#define LEFT -2
+
+
 #endif // CONSTANTES_H

@@ -13,6 +13,8 @@ typedef struct EtatLocomotion // Une structure renseignant l'etat de la locomoti
     int y;
     int theta;
     int speed;
+    int pulses;
+    int dir;
 }etatLocomotion ;
 
 
@@ -39,11 +41,9 @@ class CLocomotion
         void callback_sensors();
         void locomotionSpeedControl();
         void locomotionPositionControl();
+        void updatePower(int power);
         void resetPulses();
-        void updateEtat(long pulses);
-        void updateCurrentSpeed(long pulses);
-        void updatePos(unsigned int distance);
-        void updateAngle(unsigned int angle);
+        void updateEtat();
         void locomotionA1Interrupt();
         void locomotionB1Interrupt();
         void locomotionA2Interrupt();
@@ -63,6 +63,7 @@ class CLocomotion
         int m_speedConsigne , m_speedErrorPrev;
         int m_mPulses, m_fPulses;
         long m_speedErrorSum;
+        bool flag;
 
 
 
