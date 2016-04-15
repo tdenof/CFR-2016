@@ -17,12 +17,11 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(PIN_A2), interruptionA2, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(PIN_B2), interruptionB2, CHANGE);
   Timer3.initialize(50);
+  Timer3.attachInterrupt(positionControl);
   Timer3.stop();
   Timer4.initialize(50);
-  Timer4.stop();
-  Timer3.attachInterrupt(positionControl);
   Timer4.attachInterrupt(speedControl);
-
+  Timer4.stop();
   robot.initRobot();
   Serial.begin(9600);
 }
