@@ -5,7 +5,6 @@
 #include "headers/CMoteur.h"
 #include "headers/CTirette.h"
 #include "headers/TimerThree.h"
-#include "headers/TimerFour.h"
 
 
 CRobot robot;
@@ -17,11 +16,8 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(PIN_A2), interruptionA2, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(PIN_B2), interruptionB2, CHANGE);
   Timer3.initialize(50);
-  Timer3.attachInterrupt(positionControl);
+  Timer3.attachInterrupt(speedControl);
   Timer3.stop();
-  Timer4.initialize(50);
-  Timer4.attachInterrupt(speedControl);
-  Timer4.stop();
   robot.initRobot();
   Serial.begin(9600);
 }
@@ -50,11 +46,6 @@ void interruptionA2()
 void interruptionB2()
 {
   robot.robotB2Interrupt();
-}
-
-void positionControl()
-{
-  robot.robotPositionControl();
 }
 
 void speedControl()

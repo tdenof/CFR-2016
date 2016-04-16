@@ -23,7 +23,20 @@ CLocomotion::~CLocomotion()
 
 etatLocomotion CLocomotion::goTo(int x, int y)
 {
+  int distance = sqrt(pow(x-m_etat.x,2)+pow(y-m_etat.y,2));
+  int phi = asin((y-m_etat.y)/distance);
+  if(x-m_etat.x<0) phi = 180- phi;
+  int psi = phi - m_etat.theta;
+  if(abs(psi) < 180){
+    if(psi > 0) lTurn(psi,RIGHT);
+    else lTurn(-psi,LEFT);
+  }
+  else{
+    if(psi > 0) lTurn(360-psi,LEFT);
+    else lTurn(360+psi,RIGHT);
+  }
 
+  lAvancer(distance,FORWARD);
 }
 etatLocomotion CLocomotion::getCurrentState()
 {
@@ -89,6 +102,11 @@ int CLocomotion::calculYEvitementCarre(int distance)
     return getCurrentY()+ distance*sin(getCurrentTheta());
 }
 
+int CLocomotion::ticksToSpeed(int ticks){
+  int speed = ticks;
+  return speed;
+}
+
 // MUTATEURS
 
 // ACCESSEURS
@@ -115,18 +133,10 @@ void CLocomotion::lAvancer (unsigned int distance, int dir)
 {
   if (distance == 0) return;
   resetPulses();
-  m_fPulses = 360L*distance/(PI*WHEEL_DIAMETER);
+  unsigned int fPulses = 360L*distance/(PI*WHEEL_DIAMETER);
   m_etat.dir = dir;
   m_speedConsigne=40;
-  Timer3.start();
-  while(m_mPulses < m_fPulses && !flag){
-    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-    updateEtat();
-    
-    delay(20);
-  }
-  Timer3.stop();
-  Timer4.stop();
+  lPositionControl(fPulses);
   lStop();
 } 
 
@@ -134,18 +144,10 @@ void CLocomotion::lTurn (unsigned int angle, int dir)
 {
   if (angle == 0) return;
   resetPulses();
-  m_fPulses = angle*BASE_DIAMETER/WHEEL_DIAMETER;
+  unsigned int fPulses = angle*BASE_DIAMETER/WHEEL_DIAMETER;
   m_etat.dir = dir;
   m_speedConsigne=40;
-  Timer3.start();
-  while(m_mPulses < m_fPulses && !flag ){
-    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-    updateEtat();
-    
-    delay(20);
-  }
-  Timer3.stop();
-  Timer4.stop();
+  lPositionControl(fPulses);
   lStop();
 }
 
@@ -178,7 +180,7 @@ void CLocomotion::callback_sensors()
  
 }
 
-void CLocomotion::locomotionSpeedControl()
+void CLocomotion::lSpeedControl()
 {
     int speedError = m_speedConsigne - m_etat.speed; //error
     m_speedErrorSum += speedError; //integration
@@ -189,13 +191,19 @@ void CLocomotion::locomotionSpeedControl()
     
 }
 
-void CLocomotion::locomotionPositionControl()
+void CLocomotion::lPositionControl(unsigned int fPulses)
 {
-    Timer4.start();
-    if(m_fPulses - m_mPulses < 2048 && m_speedConsigne > SPEEDMIN) m_speedConsigne-=5;
-    if(m_speedConsigne < SPEEDMAX) m_speedConsigne+=5;
-    updateEtat();
-
+  Timer3.start();
+  while(m_mPulses < fPulses && !m_flag ){
+    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    if(fPulses - m_mPulses < 2048 && m_speedConsigne > SPEEDMIN) m_speedConsigne-=5;
+    else if(m_speedConsigne < SPEEDMAX) m_speedConsigne+=5;
+      
+  updateEtat();
+    
+  delay(20);
+  }
+  Timer3.stop();
 }
 
 void CLocomotion::updatePower(int power)
@@ -203,20 +211,20 @@ void CLocomotion::updatePower(int power)
   switch (m_etat.dir){
     case FORWARD :
       m_moteurG.updatePower(power);
-       m_moteurD.updatePower(power);
-       break;
-     case BACKWARD :
-       m_moteurG.updatePower(-power);
-       m_moteurD.updatePower(-power);
-       break;
-     case RIGHT :
-       m_moteurG.updatePower(power);
-       m_moteurD.updatePower(-power);
-       break;
-     case LEFT :
-       m_moteurG.updatePower(-power);
-       m_moteurD.updatePower(power);
-       break;
+      m_moteurD.updatePower(power);
+      break;
+    case BACKWARD :
+      m_moteurG.updatePower(-power);
+      m_moteurD.updatePower(-power);
+      break;
+    case RIGHT :
+      m_moteurG.updatePower(power);
+      m_moteurD.updatePower(-power);
+      break;
+    case LEFT :
+      m_moteurG.updatePower(-power);
+      m_moteurD.updatePower(power);
+      break;
      }
 }
 void CLocomotion::resetPulses()
@@ -224,7 +232,6 @@ void CLocomotion::resetPulses()
    m_encodeurD.reset();
    m_encodeurG.reset();
    m_mPulses = 0;
-   m_fPulses = 0;
    m_speedErrorPrev = 0;
    m_speedErrorSum = 0;
    m_speedConsigne = 40;
@@ -258,10 +265,14 @@ void CLocomotion::updateEtat()
 
     case RIGHT :
       m_etat.theta += m_etat.speed*WHEEL_DIAMETER/BASE_DIAMETER;
+      while(m_etat.theta>=360) m_etat.theta-= 360;
+      while(m_etat.theta<0) m_etat.theta+= 360;
       break;
 
     case LEFT :
       m_etat.theta -= m_etat.speed*WHEEL_DIAMETER/BASE_DIAMETER;
+      while(m_etat.theta>=360) m_etat.theta-= 360;
+      while(m_etat.theta<0) m_etat.theta+= 360;
       break;
   }
 }

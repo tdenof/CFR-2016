@@ -39,8 +39,8 @@ class CLocomotion
         void lStop();
         void printLPulses();
         void callback_sensors();
-        void locomotionSpeedControl();
-        void locomotionPositionControl();
+        void lSpeedControl();
+        void lPositionControl(unsigned fPulses);
         void updatePower(int power);
         void resetPulses();
         void updateEtat();
@@ -58,12 +58,13 @@ class CLocomotion
         int calculYEvitementCarre(int d);
         bool appartientZoneInterdite(int x,int y);
         bool traverseZoneInterdite(int distance);
+        int ticksToSpeed(int ticks);
         CMoteur m_moteurD, m_moteurG;
         CEncodeur m_encodeurD, m_encodeurG;
         int m_speedConsigne , m_speedErrorPrev;
-        int m_mPulses, m_fPulses;
+        unsigned int m_mPulses;
         long m_speedErrorSum;
-        bool flag;
+        bool m_flag;
 
 
 
