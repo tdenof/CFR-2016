@@ -84,3 +84,7 @@ void CRobot::robotB2Interrupt()
 {
   m_locomotion.locomotionB2Interrupt();
 }
+
+void CRobot::robotSpeedControl(){
+  m_locomotion.lSpeedControl();
+}

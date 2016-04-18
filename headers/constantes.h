@@ -10,6 +10,8 @@
 #define X_INIT 0
 #define Y_INIT 0
 #define THETA_INIT 0
+#define SPEED_INIT 0
+#define DIR_INIT 0
 #define NBZONEINTERDITE 1
 
 //moteurs
@@ -20,10 +22,26 @@
 #define PIN_M2IN2 9
 #define PIN_M2PWM 10
 
-//encodeurs
+//encodeurs	gris : VCC - rouge : GND - marron : A - B : violet
+// switch A and B connectics for 2nd encoder
 #define PIN_A1 18		// droite
 #define PIN_B1 19
 #define PIN_A2 20		//gauche
 #define PIN_B2 21
+
+//Control
+#define KP 1
+#define KI	0
+#define KD	0
+#define KR 0 //polar control
+#define SPEEDMAX 130
+#define SPEEDMIN 60
+
+//direction
+#define FORWARD 1
+#define BACKWARD -1
+#define RIGHT 2
+#define LEFT -2
+
 
 #endif // CONSTANTES_H

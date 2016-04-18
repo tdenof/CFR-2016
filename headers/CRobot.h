@@ -17,14 +17,15 @@ class CRobot
         int capteurIRValeur();
         void printCapteurIR();
         void printTirette();
-        void avancer(unsigned int distance, int speed);
-        void turn(unsigned int angle, int speed);
+        void avancer(unsigned int distance, int dir);
+        void turn(unsigned int angle, int dir);
         void stop();
         void printPulses();
         void robotA1Interrupt();
         void robotB1Interrupt();
         void robotA2Interrupt();
         void robotB2Interrupt();
+        void robotSpeedControl();
 
     protected:
     private:
