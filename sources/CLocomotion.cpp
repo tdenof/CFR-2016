@@ -186,7 +186,9 @@ void CLocomotion::lSpeedControl()
     int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
     m_speedErrorPrev = speedError;
     int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
-    updatePower(command);
+    int commandD = command + KR*m_dPulses;
+    int commandG = command - KR*m_dPulses;
+    updatePower(commandD,commandG);
     
 }
 
@@ -195,6 +197,7 @@ void CLocomotion::lPositionControl(unsigned int fPulses)
   Timer3.start();
   while(m_mPulses < fPulses && !m_flag ){
     m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    m_dPulses = (abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()))/2;
     if(fPulses - m_mPulses < 2048 && m_speedConsigne > SPEEDMIN) m_speedConsigne-=5;
     else if(m_speedConsigne < SPEEDMAX) m_speedConsigne+=5;
       
@@ -223,6 +226,28 @@ void CLocomotion::updatePower(int power)
     case LEFT :
       m_moteurG.updatePower(-power);
       m_moteurD.updatePower(power);
+      break;
+     }
+}
+
+void CLocomotion::updatePower(int powerD, int powerG)
+{
+  switch (m_etat.dir){
+    case FORWARD :
+      m_moteurG.updatePower(powerG);
+      m_moteurD.updatePower(powerD);
+      break;
+    case BACKWARD :
+      m_moteurG.updatePower(-powerG);
+      m_moteurD.updatePower(-powerD);
+      break;
+    case RIGHT :
+      m_moteurG.updatePower(powerG);
+      m_moteurD.updatePower(-powerD);
+      break;
+    case LEFT :
+      m_moteurG.updatePower(-powerG);
+      m_moteurD.updatePower(powerD);
       break;
      }
 }

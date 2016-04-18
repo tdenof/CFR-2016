@@ -33,6 +33,7 @@
 #define KP 1
 #define KI	0
 #define KD	0
+#define KR 0 //polar control
 #define SPEEDMAX 130
 #define SPEEDMIN 60
 

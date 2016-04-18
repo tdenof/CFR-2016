@@ -1,9 +1,5 @@
 #include "headers/CRobot.h"
-#include "headers/CCapteur_IR.h"
-#include "headers/CEncodeur.h"
-#include "headers/CLocomotion.h"
-#include "headers/CMoteur.h"
-#include "headers/CTirette.h"
+
 #include "headers/TimerThree.h"
 
 

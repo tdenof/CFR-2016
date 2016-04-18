@@ -42,6 +42,7 @@ class CLocomotion
         void lSpeedControl();
         void lPositionControl(unsigned fPulses);
         void updatePower(int power);
+        void updatePower(int powerD, int powerG);
         void resetPulses();
         void updateEtat();
         void locomotionA1Interrupt();
@@ -62,7 +63,7 @@ class CLocomotion
         CMoteur m_moteurD, m_moteurG;
         CEncodeur m_encodeurD, m_encodeurG;
         int m_speedConsigne , m_speedErrorPrev;
-        unsigned int m_mPulses;
+        unsigned int m_mPulses, m_dPulses;
         long m_speedErrorSum;
         bool m_flag;
 
