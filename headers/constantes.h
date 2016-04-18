@@ -12,6 +12,10 @@
 #define THETA_INIT 0
 #define NBZONEINTERDITE 1
 
+//PINCE
+#define ID_PINCED 1
+#define ID_PINCEG 2
+
 //moteurs
 #define PIN_M1IN1 5		//droite
 #define PIN_M1IN2 6
