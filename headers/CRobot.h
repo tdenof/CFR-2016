@@ -5,6 +5,7 @@
 #include "CCapteur_IR.h"
 #include "CTirette.h"
 #include "CLocomotion.h"
+#include "CPlier.h"
 
 class CRobot
 {
@@ -32,6 +33,7 @@ class CRobot
     CTirette m_tirette;
     CCapteur_IR m_capteurIR;
     CLocomotion m_locomotion;
+    CPlier m_plier;
 };
 
 #endif // CROBOT_H
