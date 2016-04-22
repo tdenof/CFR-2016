@@ -54,5 +54,5 @@ void CMoteur::updatePower(int power)
      Serial.println(m_power);
   }
   analogWrite(m_pwmPin,m_power);
-  Serial.println(m_power);
+  // Serial.println(m_power);
 }

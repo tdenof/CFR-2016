@@ -20,10 +20,19 @@ void setup()
 
 void loop()
 {
-  robot.avancer(200);
-  while(1){
+  delay(1000);
+  for(int i = 60;i<=150;i+=5){
+    robot.avancer(i);
+    delay(20);
+  }
+  while(millis()<5000){
     robot.printPulses();
-    delay(1500);
+    delay(20);
+  }
+  Serial.println("STOP");
+  robot.avancer(0);
+  while(1){
+
   }
 }
 
