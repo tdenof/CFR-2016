@@ -3,6 +3,7 @@
 #include "CMoteur.h"
 #include "CEncodeur.h"
 #include "constantes.h"
+
 #define DISTANCE_EVITEMENT 300 // Distance sur laquelle va avancer le robot lors de l'evitement carre : 300 mm
 #define NB_ZONEINTERDITE 1  // Nombre de zones interdites
 
@@ -27,24 +28,28 @@ class CLocomotion
         void initLocomotion();
         bool eviter(); // Fonction d'evitement appell��e lors de la detection d'un robot
         // MUTATEURS
-        etatLocomotion goTo(int x, int y);
+        etatLocomotion lGoTo(int x, int y);
+        void setFlag(bool flag);
         // ACCESSEURS
         int getCurrentX();
         int getCurrentY();
         int getCurrentTheta();
         int getCurrentSpeed();
+        bool getFlag();
         etatLocomotion getCurrentState();
         void lAvancer(unsigned int distance, int speed);
         void lTurn(unsigned int angle, int speed);
         void lStop();
         void printLPulses();
-        void callback_sensors();
         void lSpeedControl();
-        void lPositionControl(unsigned fPulses);
+        void lPositionControl(unsigned long fPulses);
+        void lAngleControl(unsigned long fPulses);
         void updatePower(int power);
         void updatePower(int powerD, int powerG);
         void resetPulses();
         void updateEtat();
+        void updateCoord();
+        void updatePulses();
         void locomotionA1Interrupt();
         void locomotionB1Interrupt();
         void locomotionA2Interrupt();
@@ -59,7 +64,10 @@ class CLocomotion
         int calculYEvitementCarre(int d);
         bool appartientZoneInterdite(int x,int y);
         bool traverseZoneInterdite(int distance);
-        int ticksToSpeed(int ticks);
+        unsigned long DToPulses(unsigned int distance);
+        unsigned long AToPulses(unsigned int angle);
+        unsigned int toDistance(unsigned long pulses);
+        unsigned int toAngle(unsigned long pulses);
         CMoteur m_moteurD, m_moteurG;
         CEncodeur m_encodeurD, m_encodeurG;
         int m_speedConsigne , m_speedErrorPrev;

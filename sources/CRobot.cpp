@@ -1,4 +1,5 @@
 #include "../headers/CRobot.h"
+#include "../headers/TimerFive.h"
 
 CRobot::CRobot()
 {
@@ -60,6 +61,15 @@ void CRobot::stop()
   m_locomotion.lStop();
 }
 
+void CRobot::goTo(int x, int y)
+{
+  do{
+    m_locomotion.lGoTo(x,y);
+    Serial.println(m_locomotion.getFlag());
+  }while(m_locomotion.getFlag());
+  Timer5.stop();
+}
+
 void CRobot::printPulses()
 {
   m_locomotion.printLPulses();  
@@ -85,6 +95,14 @@ void CRobot::robotB2Interrupt()
   m_locomotion.locomotionB2Interrupt();
 }
 
-void CRobot::robotSpeedControl(){
+void CRobot::robotSpeedControl()
+{
   m_locomotion.lSpeedControl();
+}
+
+void CRobot::robotObstacleDetection()
+{
+  Serial.println("Timer5");
+  if(m_capteurIR.valeur() < SEUIL_IR) m_locomotion.setFlag(true);
+  else m_locomotion.setFlag(false);
 }
