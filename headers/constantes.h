@@ -6,7 +6,7 @@
 #define PIN_TIRETTE 22
 #define PIN_CAPTEUR A2
 #define PIN_SERVO 12
-#define SEUIL_IR 300
+#define SEUIL_IR 150
 #define X_INIT 0
 #define Y_INIT 0
 #define THETA_INIT 90

@@ -21,9 +21,12 @@ CLocomotion::~CLocomotion()
     //dtor
 }
 
-etatLocomotion CLocomotion::lGoTo(int x, int y)
+etatLocomotion CLocomotion::lGoTo(int x, int y, bool detection)
 {
-  m_flag=false;
+  if(detection) Timer5.start();
+  while(m_flag){
+    delay(50);
+  }
   float distance = sqrt(pow(x-m_etat.x,2)+pow(y-m_etat.y,2));
   
   //from origin to new pos
@@ -40,7 +43,8 @@ etatLocomotion CLocomotion::lGoTo(int x, int y)
     if(psi > 0) lTurn(360-psi,LEFT);
     else lTurn(360+psi,RIGHT);
   }
-  Timer5.start();
+  
+  Serial.println("Avancer");
   delay(500);
   lAvancer(distance,FORWARD);
 }
@@ -90,14 +94,14 @@ bool CLocomotion::evitementCarre() // Un type d'evitement
    // rotation d'un angle Pi/2 dans le sens horaire si possible
     if(!traverseZoneInterdite(DISTANCE_EVITEMENT))
        {
-            lGoTo(calculXEvitementCarre(DISTANCE_EVITEMENT),calculYEvitementCarre(DISTANCE_EVITEMENT));
+            lGoTo(calculXEvitementCarre(DISTANCE_EVITEMENT),calculYEvitementCarre(DISTANCE_EVITEMENT), true);
                        
             return true;
         }
      // rotation d'un angle Pi/2 dans le sens anti-horaire si possible
       if(!traverseZoneInterdite(-DISTANCE_EVITEMENT))
        {
-            lGoTo(calculXEvitementCarre(-DISTANCE_EVITEMENT),calculYEvitementCarre(-DISTANCE_EVITEMENT));
+            lGoTo(calculXEvitementCarre(-DISTANCE_EVITEMENT),calculYEvitementCarre(-DISTANCE_EVITEMENT), true);
            
             return true;
         }
@@ -162,7 +166,12 @@ bool CLocomotion::getFlag()
 }
 void CLocomotion::lAvancer (unsigned int distance, int dir)
 {
-  if (distance == 0 || m_flag) return;
+  if (distance == 0) return;
+  if(m_flag) {
+    lStop();
+    return;
+  }
+
   resetPulses();
   unsigned long fPulses = DToPulses(distance);
   Serial.print("FPULSES : ");
@@ -182,7 +191,19 @@ void CLocomotion::lAvancer (unsigned int distance, int dir)
 
 void CLocomotion::lTurn (unsigned int angle, int dir)
 {
-  if (angle == 0 || m_flag) return;
+  Serial.println("ENTER LTURN");
+  if (angle == 0) {
+    Serial.println("RETURN1");
+    return;
+  }
+  Serial.println("TEST2");
+  if(m_flag) {
+    Serial.println("LSTOP");
+    lStop();
+    return;
+    Serial.println("RETURN");
+  }
+  Serial.println("RESET");
   resetPulses();
   unsigned long fPulses = AToPulses(angle);
   Serial.print("FPULSES : ");
@@ -287,7 +308,7 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
 {
   Timer3.start();
 
-  for(int i = 15 ; i<SPEEDMAXTURN && m_mPulses < fPulses && !m_flag ; i+=5){
+  for(int i = 15 ; i<SPEEDMAXTURN && m_mPulses < fPulses ; i+=5){
     updatePulses();
     m_speedConsigne = i;
     Serial.print("Consigne : ");
@@ -297,7 +318,7 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
     delay(30);
   }
       
-  while(m_mPulses < fPulses && !m_flag ){
+  while(m_mPulses < fPulses ){
     updatePulses();
     if(fPulses - m_mPulses < 400 && m_speedConsigne >= SPEEDMINTURN) 
       m_speedConsigne-=5;

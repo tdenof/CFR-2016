@@ -25,7 +25,9 @@ void setup()
 void loop()
 {
   delay(2000);
-  robot.goTo(-200,1000);
+  robot.turn(90,LEFT);
+  
+
   while(1){
     Serial.println("FINISH");
     delay(1000);
