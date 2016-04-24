@@ -12,6 +12,7 @@ class CPlier
         void open();
         void open(int angle);
         void close();
+        void init();
 
     protected:
     private:

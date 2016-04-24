@@ -251,20 +251,10 @@ void CLocomotion::printLPulses()
   Serial.print("Encodeur G : ");
   m_encodeurG.printPulse();
   Serial.print("Difference : ");
-  Serial.println(abs(m_encodeurD.getPulseCount()) - abs(m_encodeurG.getPulseCount()));   
+  Serial.println(abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()));   
 }
 
-<<<<<<< HEAD
-void CLocomotion::callback_sensors()
-{
-  long pulses_moy = (abs(m_encodeurD.getPulseCount())+abs(m_encodeurG.getPulseCount()))/2; // moy pulses
-  resetPulses(); // set pulses to 0
-  updateEtat();
- 
-}
 
-=======
->>>>>>> control
 void CLocomotion::lSpeedControl()
 {
     // int speedError = m_speedConsigne - m_etat.speed; //error

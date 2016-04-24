@@ -3,7 +3,7 @@
 
 #define WHEEL_DIAMETER 116L
 #define BASE_DIAMETER 306L
-#define PIN_TIRETTE 22
+#define PIN_TIRETTE 45
 #define PIN_CAPTEUR A2
 #define PIN_SERVO 12
 #define SEUIL_IR 250
@@ -16,10 +16,10 @@
 
 //Plier
 #define ID_PINCED 1
-#define ID_PINCEG 2
+#define ID_PINCEG 3
 
 //Rod
-#define ID_RODL 3 //low
+#define ID_RODL 2 //low
 #define ID_RODH 4 //high
 
 //moteurs
@@ -45,8 +45,8 @@
 #define KRT 1.2F //polar control
 #define SPEEDMAX 100
 #define SPEEDMIN 50
-#define SPEEDMAXTURN 80
-#define SPEEDMINTURN 70
+#define SPEEDMAXTURN 70
+#define SPEEDMINTURN 60
 
 //direction
 #define FORWARD 1

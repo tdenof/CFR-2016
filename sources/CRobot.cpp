@@ -14,7 +14,7 @@ CRobot::~CRobot()
 void CRobot::initRobot()
 {
     
-    
+    m_plier.init();
     m_capteurIR.initCapteur();
     m_tirette.initTirette();
     m_locomotion.lStop();
@@ -26,7 +26,7 @@ void CRobot::servoPos(int pos)
   
 }
 
-int CRobot::etatTirette()
+bool CRobot::etatTirette()
 {
   return m_tirette.etat();
 }
@@ -69,6 +69,18 @@ void CRobot::goTo(int x, int y, bool detection)
     Serial.println(m_locomotion.getFlag());
   }while(m_locomotion.getFlag());
   Timer5.stop();
+}
+
+void CRobot::openPlier(){
+  m_plier.open();
+}
+
+void CRobot::openPlier(int angle){
+  m_plier.open(angle);
+}
+
+void CRobot::closePlier(){
+  m_plier.close();
 }
 
 void CRobot::printPulses()

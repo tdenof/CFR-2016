@@ -17,14 +17,21 @@ void setup()
   Timer5.initialize(20000);
   Timer5.attachInterrupt(obstacleDetection);
   Timer5.stop();
+  Serial3.begin(1000000);
   robot.initRobot();
   Serial.begin(115200);
 }
 
 void loop()
 {
-  delay(2000);
-  robot.goTo(-200,-400,true);
+  while(robot.etatTirette()){
+    delay(50);
+  }
+
+  robot.goTo(0,400,false);
+  robot.goTo(0,800,false);
+  
+
   
 
   while(1){

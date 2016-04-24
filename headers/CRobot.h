@@ -15,7 +15,7 @@ class CRobot
         virtual ~CRobot();
         void initRobot();
         void servoPos(int pos);
-        int etatTirette();
+        bool etatTirette();
         int capteurIRValeur();
         void printCapteurIR();
         void printTirette();
@@ -23,6 +23,9 @@ class CRobot
         void turn(unsigned int angle, int dir);
         void stop();
         void goTo(int x, int y, bool detection);
+        void openPlier();
+        void openPlier(int angle);
+        void closePlier();
         void printPulses();
         void robotA1Interrupt();
         void robotB1Interrupt();
