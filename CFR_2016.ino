@@ -25,7 +25,7 @@ void setup()
 void loop()
 {
   delay(2000);
-  robot.turn(90,LEFT);
+  robot.goTo(-200,-400,true);
   
 
   while(1){

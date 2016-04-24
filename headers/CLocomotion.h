@@ -28,7 +28,7 @@ class CLocomotion
         void initLocomotion();
         bool eviter(); // Fonction d'evitement appell��e lors de la detection d'un robot
         // MUTATEURS
-        etatLocomotion lGoTo(int x, int y, bool detection);
+        void lGoTo(int x, int y, bool detection);
         void setFlag(bool flag);
         // ACCESSEURS
         int getCurrentX();
@@ -67,11 +67,12 @@ class CLocomotion
         unsigned long DToPulses(unsigned int distance);
         unsigned long AToPulses(unsigned int angle);
         unsigned int toDistance(unsigned long pulses);
-        unsigned int toAngle(unsigned long pulses);
+        int toAngle(long pulses);
         CMoteur m_moteurD, m_moteurG;
         CEncodeur m_encodeurD, m_encodeurG;
         int m_speedConsigne , m_speedErrorPrev;
-        unsigned int m_mPulses, m_dPulses;
+        unsigned int m_mPulses;
+        int m_dPulses;
         long m_speedErrorSum;
         bool m_flag;
 

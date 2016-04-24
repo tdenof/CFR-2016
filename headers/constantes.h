@@ -6,7 +6,7 @@
 #define PIN_TIRETTE 22
 #define PIN_CAPTEUR A2
 #define PIN_SERVO 12
-#define SEUIL_IR 150
+#define SEUIL_IR 250
 #define X_INIT 0
 #define Y_INIT 0
 #define THETA_INIT 90
@@ -37,8 +37,8 @@
 #define KRT 1.2F //polar control
 #define SPEEDMAX 100
 #define SPEEDMIN 50
-#define SPEEDMAXTURN 70
-#define SPEEDMINTURN 60
+#define SPEEDMAXTURN 80
+#define SPEEDMINTURN 70
 
 //direction
 #define FORWARD 1
