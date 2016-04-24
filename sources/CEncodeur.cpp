@@ -5,8 +5,8 @@ CEncodeur::CEncodeur(int pisteAPin, int pisteBPin)
 {
   m_pisteAPin = pisteAPin;
   m_pisteBPin = pisteBPin;
-  pinMode(m_pisteAPin, INPUT_PULLUP);
-  pinMode(m_pisteBPin, INPUT_PULLUP);
+  pinMode(m_pisteAPin, INPUT);
+  pinMode(m_pisteBPin, INPUT);
   m_pisteAValue = digitalRead(m_pisteAPin);
   m_pisteBValue = digitalRead(m_pisteBPin);
 }
@@ -18,7 +18,7 @@ CEncodeur::~CEncodeur()
 }
 
 
-long CEncodeur::pulseCountValue()
+long CEncodeur::getPulseCount()
 {
   return m_pulseCount;
 }
@@ -34,6 +34,11 @@ void CEncodeur::printPistes()
   Serial.println(m_pisteAValue);
   Serial.print("Piste B : ") ;
   Serial.println(m_pisteBValue);
+}
+
+void CEncodeur::reset()
+{
+  m_pulseCount = 0;
 }
 
 void CEncodeur::pisteAInterrupt()
