@@ -28,6 +28,8 @@ void loop()
     delay(50);
   }
 
+  delay(2000);
+
   robot.goTo(0,400,false);
   robot.goTo(0,800,false);
   
