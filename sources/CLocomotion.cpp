@@ -1,12 +1,15 @@
 #include "../headers/CLocomotion.h"
+#include "../headers/TimerThree.h"
+#include "../headers/TimerFive.h"
 
 #include "../headers/zoneInterdite.h"
 #include <Arduino.h>
 
-CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT}), 
+CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT,SPEED_INIT,DIR_INIT}), 
 m_moteurD(PIN_M1IN1,PIN_M1IN2,PIN_M1PWM), 
 m_moteurG(PIN_M2IN1,PIN_M2IN2,PIN_M2PWM), 
-m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2)
+m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2), 
+m_speedConsigne(0), m_speedErrorSum(0), m_speedErrorPrev(0),m_flag(false), m_mPulses(0), m_dPulses(0)
 {
    //ctor
    
@@ -18,14 +21,49 @@ CLocomotion::~CLocomotion()
     //dtor
 }
 
-etatLocomotion CLocomotion::goTo(int x, int y)
+void CLocomotion::lGoTo(int x, int y, bool detection)
 {
+  if(detection) Timer5.start();
+  while(m_flag){
+    delay(50);
+  }
+  float distance = sqrt(pow(x-m_etat.x,2)+pow(y-m_etat.y,2));
+  if(distance==0) return;
+  Serial.print("distance : ");
+  Serial.print(distance);
+  //from origin to new pos
+  int phi = (int)(asin((y-m_etat.y)/distance)*180.0F/PI);
+  Serial.print("phi : ");
+  Serial.print(phi);
 
+  if(x-m_etat.x<0) phi = 180- phi;
+  // between actual and new pos
+  int psi = phi - m_etat.theta;
+  Serial.print("psi : ");
+  Serial.print(psi);
+  if(abs(psi) < 180){
+    if(psi > 0) lTurn(psi,RIGHT);
+    else lTurn(-psi,LEFT);
+  }
+  else{
+    if(psi > 0) lTurn(360-psi,LEFT);
+    else lTurn(360+psi,RIGHT);
+  }
+  
+  Serial.println("Avancer");
+  delay(500);
+  lAvancer(distance,FORWARD);
 }
-etatLocomotion CLocomotion::getCurrentPosition()
+
+void CLocomotion::setFlag(bool flag)
+{
+  m_flag=flag;
+}
+
+etatLocomotion CLocomotion::getCurrentState()
 {
     etatLocomotion pos;
-    pos = {getCurrentX(),getCurrentY(),getCurrentTheta()};
+    pos = {getCurrentX(),getCurrentY(),getCurrentTheta(),getCurrentSpeed()};
     return pos;
 }
 
@@ -62,14 +100,14 @@ bool CLocomotion::evitementCarre() // Un type d'evitement
    // rotation d'un angle Pi/2 dans le sens horaire si possible
     if(!traverseZoneInterdite(DISTANCE_EVITEMENT))
        {
-            goTo(calculXEvitementCarre(DISTANCE_EVITEMENT),calculYEvitementCarre(DISTANCE_EVITEMENT));
+            lGoTo(calculXEvitementCarre(DISTANCE_EVITEMENT),calculYEvitementCarre(DISTANCE_EVITEMENT), true);
                        
             return true;
         }
      // rotation d'un angle Pi/2 dans le sens anti-horaire si possible
       if(!traverseZoneInterdite(-DISTANCE_EVITEMENT))
        {
-            goTo(calculXEvitementCarre(-DISTANCE_EVITEMENT),calculYEvitementCarre(-DISTANCE_EVITEMENT));
+            lGoTo(calculXEvitementCarre(-DISTANCE_EVITEMENT),calculYEvitementCarre(-DISTANCE_EVITEMENT), true);
            
             return true;
         }
@@ -86,6 +124,25 @@ int CLocomotion::calculYEvitementCarre(int distance)
     return getCurrentY()+ distance*sin(getCurrentTheta());
 }
 
+unsigned long CLocomotion::DToPulses(unsigned int distance)
+{
+  return 1024L*distance/(PI*WHEEL_DIAMETER);
+}
+
+unsigned int CLocomotion::toDistance(unsigned long pulses)
+{
+  return (int)(pulses*PI*WHEEL_DIAMETER/1024L);
+}
+
+unsigned long CLocomotion::AToPulses(unsigned int angle)
+{
+  return 1024L*angle*BASE_DIAMETER/(360L*WHEEL_DIAMETER);
+}
+
+int CLocomotion::toAngle(long pulses){
+  return (int)(360L*pulses*WHEEL_DIAMETER/(1024L*BASE_DIAMETER));
+}
+
 // MUTATEURS
 
 // ACCESSEURS
@@ -93,25 +150,98 @@ int CLocomotion::getCurrentX()
 {
     return m_etat.x;
 }
+
 int CLocomotion::getCurrentY()
 {
     return m_etat.y;
 }
+
 int CLocomotion::getCurrentTheta()
 {
     return m_etat.theta;
 }
 
-void CLocomotion::lAvancer(int speed)
+int CLocomotion::getCurrentSpeed()
 {
-  m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(speed);
+    return m_etat.speed;
 }
 
-void CLocomotion::lTourner(int speed)
+
+bool CLocomotion::getFlag()
 {
-  m_moteurD.updatePower(speed);
-  m_moteurG.updatePower(-1.16*speed);
+  return m_flag;
+}
+
+void CLocomotion::lAvancer (unsigned int distance, int dir)
+{
+  if (distance == 0) return;
+  
+  resetPulses();
+  if(m_flag) {
+    lStop();
+    return;
+  }
+
+  
+  unsigned long fPulses = DToPulses(distance);
+  Serial.print("FPULSES : ");
+  Serial.println(fPulses);
+  m_etat.dir = dir;
+  m_speedConsigne=10;
+  lPositionControl(fPulses);
+  lStop();
+  updateCoord();
+  Serial.println(getCurrentX());
+  Serial.println(getCurrentY());
+  Serial.println(getCurrentTheta());
+  Serial.println(m_dPulses);
+  Serial.println(m_mPulses);
+
+} 
+
+void CLocomotion::lTurn (unsigned int angle, int dir)
+{
+  Serial.println("ENTER LTURN");
+  Serial.println(angle);
+  if (angle == 0) {
+    Serial.println("RETURN1");
+    return;
+  }
+  Serial.println("RESET");
+  resetPulses();
+  Serial.println("TEST2");
+  // if(m_flag) {
+  //   Serial.println("LSTOP");
+  //   lStop();
+  //   Serial.println("RETURN");
+  //   return;
+    
+  // }
+  
+  unsigned long fPulses = AToPulses(angle);
+  Serial.print("FPULSES : ");
+  Serial.println(fPulses);
+  m_etat.dir = dir;
+  m_speedConsigne=10;
+  lAngleControl(fPulses);
+  lStop();
+  updateCoord();
+  Serial.println(getCurrentTheta());
+}
+
+void CLocomotion::lStop()
+{
+  while(m_speedConsigne > 5){
+    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    m_dPulses = (abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()))/2;
+    m_speedConsigne -= 5;
+    updateEtat();
+    delay(20);
+    Serial.println("STOP PROCEDURE");
+    printLPulses();
+  }
+  Timer3.stop();
+  updatePower(0);
 }
 
 void CLocomotion::printLPulses()
@@ -122,6 +252,221 @@ void CLocomotion::printLPulses()
   m_encodeurG.printPulse();
   Serial.print("Difference : ");
   Serial.println(abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()));   
+}
+
+
+void CLocomotion::lSpeedControl()
+{
+    // int speedError = m_speedConsigne - m_etat.speed; //error
+    // // Serial.print("Error : ");
+    // // Serial.println(speedError);
+    // m_speedErrorSum += speedError; //integration
+    // int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
+    // m_speedErrorPrev = speedError;
+    // int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
+  int commandD;
+  int commandG;
+    if(abs(m_etat.dir)==1){
+      commandD = m_speedConsigne + (int)KR*m_dPulses;
+      commandG = m_speedConsigne - (int)KR*m_dPulses;
+    }
+    else {
+      commandD = m_speedConsigne + (int)KRT*m_dPulses;
+      commandG = m_speedConsigne - (int)KRT*m_dPulses;
+    }
+    // Serial.print("commandD :");++
+    // Serial.println(commandD);
+    // Serial.print("commandG :");
+    // Serial.println(commandG);
+
+  commandD = 15*sqrt(commandD);
+  commandG = 15*sqrt(commandG);
+  Serial.print("Droite : ");
+  Serial.println(commandD);
+  Serial.print("Gauche : ");
+  Serial.println(commandG);
+    updatePower(commandD,commandG);
+    
+}
+
+void CLocomotion::lPositionControl(unsigned long fPulses)
+{
+  Timer3.start();
+
+  for(int i = 15 ; i<SPEEDMAX && m_mPulses < fPulses && !m_flag ; i+=5){
+    updatePulses();
+    m_speedConsigne = i;
+    Serial.print("Consigne Pos1: ");
+    Serial.println(m_speedConsigne);
+    printLPulses();
+    updateEtat();
+    delay(30);
+  }
+      
+  while(m_mPulses < fPulses && !m_flag ){
+    updatePulses();
+    
+    if(fPulses - m_mPulses < 1536 && m_speedConsigne >= SPEEDMIN) 
+      m_speedConsigne-=5;
+    
+    Serial.print("Consigne Pos2: ");
+    Serial.println(m_speedConsigne);
+    printLPulses();
+  updateEtat();
+    
+  delay(30);
+  }
+
+}
+
+void CLocomotion::lAngleControl(unsigned long fPulses)
+{
+  Timer3.start();
+
+  for(int i = 15 ; i<SPEEDMAXTURN && m_mPulses < fPulses ; i+=5){
+    updatePulses();
+    m_speedConsigne = i;
+    Serial.print("Consigne : TUR1");
+    Serial.println(m_speedConsigne);
+    printLPulses();
+    updateEtat();
+    delay(30);
+  }
+      
+  while(m_mPulses < fPulses ){
+    updatePulses();
+    if(fPulses - m_mPulses < 400 && m_speedConsigne >= SPEEDMINTURN) 
+      m_speedConsigne-=5;
+    
+    Serial.print("Consigne TUR2: ");
+    Serial.println(m_speedConsigne);
+    printLPulses();
+  updateEtat();
+    
+  delay(30);
+  }
+  
+}
+
+void CLocomotion::updatePower(int power)
+{
+  switch (m_etat.dir){
+    case FORWARD :
+      m_moteurG.updatePower(power);
+      m_moteurD.updatePower(power);
+      break;
+    case BACKWARD :
+      m_moteurG.updatePower(-power);
+      m_moteurD.updatePower(-power);
+      break;
+    case RIGHT :
+      m_moteurG.updatePower(power);
+      m_moteurD.updatePower(-power);
+      break;
+    case LEFT :
+      m_moteurG.updatePower(-power);
+      m_moteurD.updatePower(power);
+      break;
+     }
+}
+
+void CLocomotion::updatePower(int powerD, int powerG)
+{
+  switch (m_etat.dir){
+    case FORWARD :
+      m_moteurG.updatePower(powerG);
+      m_moteurD.updatePower(powerD);
+      break;
+    case BACKWARD :
+      m_moteurG.updatePower(-powerG);
+      m_moteurD.updatePower(-powerD);
+      break;
+    case RIGHT :
+      m_moteurG.updatePower(powerG);
+      m_moteurD.updatePower(-powerD);
+      break;
+    case LEFT :
+      m_moteurG.updatePower(-powerG);
+      m_moteurD.updatePower(powerD);
+      break;
+     }
+}
+void CLocomotion::resetPulses()
+{
+   m_encodeurD.reset();
+   m_encodeurG.reset();
+   m_mPulses = 0;
+   m_speedErrorPrev = 0;
+   m_speedErrorSum = 0;
+   m_speedConsigne = 10;
+   m_flag = false;
+   delay(100);
+}
+
+void CLocomotion::updateEtat()
+{
+  // update etat speed
+  m_etat.speed = m_mPulses - m_etat.pulses ;
+
+  //update etat pulses
+  m_etat.pulses = m_mPulses;
+
+}
+
+void CLocomotion::updateCoord()
+{
+  switch (m_etat.dir){
+
+    case FORWARD :
+      {
+        Serial.print("m_mPulses : ");
+        Serial.println(m_mPulses);
+        unsigned int distance = toDistance(m_mPulses);
+        Serial.print("distance : ");
+        Serial.println(distance);
+        m_etat.x += distance*cos(getCurrentTheta()*PI/180);
+        Serial.print("x : ");
+        Serial.println(m_etat.x);
+        m_etat.y += distance*sin(getCurrentTheta()*PI/180);
+        Serial.print("y : ");
+        Serial.println(m_etat.y);
+        Serial.print("m_dPulses : ");
+        Serial.println(m_dPulses);
+        m_etat.theta +=toAngle(m_dPulses);
+        Serial.println(m_etat.theta);
+      }
+     break;
+
+    case BACKWARD :
+      {
+        unsigned int distance = toDistance(m_mPulses);
+        m_etat.x -= distance*cos(getCurrentTheta()*PI/180);
+        m_etat.y -= distance*sin(getCurrentTheta()*PI/180);
+        m_etat.theta -=toAngle(m_dPulses);
+      }
+      break;
+
+    case RIGHT :
+      m_etat.theta += toAngle(m_mPulses);
+      Serial.println(m_etat.theta);
+      while(m_etat.theta>=360) m_etat.theta-= 360;
+      while(m_etat.theta<0) m_etat.theta+= 360;
+      Serial.println(m_etat.theta);
+      break;
+
+    case LEFT :
+      m_etat.theta -= toAngle(m_mPulses);
+      while(m_etat.theta>=360) m_etat.theta-= 360;
+      while(m_etat.theta<0) m_etat.theta+= 360;
+      break;
+  }
+}
+
+void CLocomotion::updatePulses(){
+   m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
+    m_dPulses = (abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()))/2;
+    Serial.print("UPDATE DPULSES");
+    Serial.println(m_dPulses);
 }
 
 void CLocomotion::locomotionA1Interrupt()
@@ -143,3 +488,4 @@ void CLocomotion::locomotionB2Interrupt()
 {
   m_encodeurG.pisteBInterrupt();
 }
+

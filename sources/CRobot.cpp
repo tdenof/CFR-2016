@@ -1,4 +1,5 @@
 #include "../headers/CRobot.h"
+#include "../headers/TimerFive.h"
 
 CRobot::CRobot()
 {
@@ -12,20 +13,20 @@ CRobot::~CRobot()
 
 void CRobot::initRobot()
 {
-    m_servo.attach(PIN_SERVO);
-    m_servo.write(0);
+    
+    m_plier.init();
     m_capteurIR.initCapteur();
     m_tirette.initTirette();
-    m_locomotion.lAvancer(0);
+    m_locomotion.lStop();
 
 }
 
 void CRobot::servoPos(int pos)
 {
-  m_servo.write(pos);
+  
 }
 
-int CRobot::etatTirette()
+bool CRobot::etatTirette()
 {
   return m_tirette.etat();
 }
@@ -45,14 +46,41 @@ void CRobot::printTirette()
   m_tirette.printEtat();
 }
 
-void CRobot::avancer(int speed)
+void CRobot::avancer(unsigned int distance, int dir)
 {
-  m_locomotion.lAvancer(speed);
+  m_locomotion.lAvancer(distance, dir);
 }
 
-void CRobot::tourner(int speed)
+void CRobot::turn(unsigned int angle, int dir)
 {
-  m_locomotion.lTourner(speed);
+  Serial.println("TEUR");
+  m_locomotion.lTurn(angle, dir);
+}
+
+void CRobot::stop()
+{
+  m_locomotion.lStop();
+}
+
+void CRobot::goTo(int x, int y, bool detection)
+{
+  do{
+    m_locomotion.lGoTo(x,y, detection);
+    Serial.println(m_locomotion.getFlag());
+  }while(m_locomotion.getFlag());
+  Timer5.stop();
+}
+
+void CRobot::openPlier(){
+  m_plier.open();
+}
+
+void CRobot::openPlier(int angle){
+  m_plier.open(angle);
+}
+
+void CRobot::closePlier(){
+  m_plier.close();
 }
 
 void CRobot::printPulses()
@@ -78,4 +106,20 @@ void CRobot::robotB1Interrupt()
 void CRobot::robotB2Interrupt()
 {
   m_locomotion.locomotionB2Interrupt();
+}
+
+void CRobot::robotSpeedControl()
+{
+  m_locomotion.lSpeedControl();
+}
+
+void CRobot::robotObstacleDetection()
+{
+  Serial.println("Timer5");
+  if(m_capteurIR.valeur() > SEUIL_IR) {
+    m_locomotion.setFlag(true);
+    Serial.println("SET FLAG!!!");
+    Serial.println(m_capteurIR.valeur());
+  }
+  else m_locomotion.setFlag(false);
 }
