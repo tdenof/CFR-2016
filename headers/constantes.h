@@ -2,7 +2,7 @@
 #define CONSTANTES_H
 
 #define WHEEL_DIAMETER 116L
-#define BASE_DIAMETER 306L
+#define BASE_DIAMETER 340L
 #define PIN_TIRETTE 45
 #define PIN_CAPTEUR A2
 #define PIN_SERVO 12
@@ -45,10 +45,10 @@
 #define KPI 0
 #define KPD 0
 #define KPPR 1.2F //polar control
-#define SPEEDMAX 100
-#define SPEEDMIN 50
-#define SPEEDMAXTURN 70
-#define SPEEDMINTURN 60
+#define SPEEDMAX 120
+#define SPEEDMIN 60
+#define SPEEDMAXTURN 120
+#define SPEEDMINTURN 70
 
 //direction
 #define FORWARD 1

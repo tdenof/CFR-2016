@@ -219,8 +219,8 @@ void CLocomotion::lTurn (unsigned int angle, int dir)
   // }
   
   unsigned long fPulses = AToPulses(angle);
-  // Serial.print("FPULSES : ");
-  // Serial.println(fPulses);
+  Serial.print("FPULSES : ");
+  Serial.println(fPulses);
   m_etat.dir = dir;
   m_speedConsigne=10;
   lAngleControl(fPulses);
@@ -300,7 +300,7 @@ void CLocomotion::lPositionControl(unsigned long fPulses)
     // Serial.println(m_speedConsigne);
     printLPulses();
     updateEtat();
-    delay(30);
+    delay(20);
   }
       
   while(m_mPulses < fPulses && !m_flag ){
@@ -314,7 +314,7 @@ void CLocomotion::lPositionControl(unsigned long fPulses)
     printLPulses();
   updateEtat();
     
-  delay(30);
+  delay(20);
   }
 
 }
@@ -330,7 +330,7 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
     // Serial.println(m_speedConsigne);
     printLPulses();
     updateEtat();
-    delay(30);
+    delay(20);
   }
       
   while(m_mPulses < fPulses ){
@@ -343,7 +343,7 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
     printLPulses();
   updateEtat();
     
-  delay(30);
+  delay(20);
   }
   
 }
