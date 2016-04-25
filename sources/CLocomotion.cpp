@@ -232,8 +232,7 @@ void CLocomotion::lTurn (unsigned int angle, int dir)
 void CLocomotion::lStop()
 {
   while(m_speedConsigne > 5){
-    m_mPulses = (abs(m_encodeurD.pulseCountValue()) + abs(m_encodeurG.pulseCountValue()))/2;
-    m_dPulses = (abs(m_encodeurD.pulseCountValue()) - abs(m_encodeurG.pulseCountValue()))/2;
+    updatePulses();
     m_speedConsigne -= 5;
     updateEtat();
     delay(20);
@@ -258,34 +257,35 @@ void CLocomotion::printLPulses()
 void CLocomotion::lSpeedControl()
 {
     int speedError = m_speedConsigne - m_etat.speed; //error
-    // Serial.print("Error : ");
-    // Serial.println(speedError);
+    Serial.print("Error : ");
+    Serial.println(speedError);
     m_speedErrorSum += speedError; //integration
     int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
     m_speedErrorPrev = speedError;
     int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
-  int commandD;
-  int commandG;
-    if(abs(m_etat.dir)==1){
-      commandD = m_speedConsigne - (int)KPP*m_dPulses;
-      commandG = m_speedConsigne + (int)KPP*m_dPulses;
-    }
-    else {
-      commandD = m_speedConsigne - (int)KPPR*m_dPulses;
-      commandG = m_speedConsigne + (int)KPPR*m_dPulses;
-    }
+  // int commandD = command;
+  // int commandG = command;
+    // if(abs(m_etat.dir)==1){
+    //   commandD -= (int)KPP*m_dPulses;
+    //   commandG += (int)KPP*m_dPulses;
+    // }
+    // else {
+    //   commandD -= (int)KPPR*m_dPulses;
+    //   commandG += (int)KPPR*m_dPulses;
+    // }
     // Serial.print("commandD :");
     // Serial.println(commandD);
     // Serial.print("commandG :");
     // Serial.println(commandG);
-
-  commandD = 15*sqrt(commandD);
-  commandG = 15*sqrt(commandG);
-  Serial.print("Droite : ");
-  Serial.println(commandD);
-  Serial.print("Gauche : ");
-  Serial.println(commandG);
-    updatePower(commandD,commandG);
+  command = 15*sqrt(command);
+  // commandD = 15*sqrt(commandD);
+  // commandG = 15*sqrt(commandG);
+  // Serial.print("Droite : ");
+  // Serial.println(commandD);
+  // Serial.print("Gauche : ");
+  // Serial.println(commandG);
+  Serial.println(command);
+    updatePower(command);
     
 }
 
@@ -335,7 +335,7 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
       
   while(m_mPulses < fPulses ){
     updatePulses();
-    if(fPulses - m_mPulses < 400 && m_speedConsigne >= SPEEDMINTURN) 
+    if(fPulses - m_mPulses < 100 && m_speedConsigne >= SPEEDMINTURN) 
       m_speedConsigne-=5;
     
     // Serial.print("Consigne TUR2: ");

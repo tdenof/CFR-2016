@@ -39,7 +39,7 @@
 
 //Control
 #define KP 1
-#define KI	0
+#define KI	0.1F
 #define KD	0
 #define KPP 1
 #define KPI 0

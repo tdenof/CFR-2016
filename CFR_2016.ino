@@ -29,7 +29,7 @@ void loop()
     delay(50);
   }
 
-  robot.avancer(500,FORWARD);
+  robot.turn(90,RIGHT);
     
 
   while(1){
