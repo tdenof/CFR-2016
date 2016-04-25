@@ -29,10 +29,7 @@ void loop()
   }
 
   robot.goTo(0,400,false);
-  robot.goTo(0,800,false);
-  
-
-  
+    
 
   while(1){
     Serial.println("FINISH");

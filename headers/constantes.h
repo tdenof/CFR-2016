@@ -41,8 +41,10 @@
 #define KP 2
 #define KI	0
 #define KD	0
-#define KR 1
-#define KRT 1.2F //polar control
+#define KPP 1
+#define KPI 0
+#define KPD 0
+#define KPPR 1.2F //polar control
 #define SPEEDMAX 100
 #define SPEEDMIN 50
 #define SPEEDMAXTURN 70

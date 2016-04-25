@@ -29,18 +29,18 @@ void CLocomotion::lGoTo(int x, int y, bool detection)
   }
   float distance = sqrt(pow(x-m_etat.x,2)+pow(y-m_etat.y,2));
   if(distance==0) return;
-  Serial.print("distance : ");
-  Serial.print(distance);
+  // Serial.print("distance : ");
+  // Serial.print(distance);
   //from origin to new pos
   int phi = (int)(asin((y-m_etat.y)/distance)*180.0F/PI);
-  Serial.print("phi : ");
-  Serial.print(phi);
+  // Serial.print("phi : ");
+  // Serial.print(phi);
 
   if(x-m_etat.x<0) phi = 180- phi;
   // between actual and new pos
   int psi = phi - m_etat.theta;
-  Serial.print("psi : ");
-  Serial.print(psi);
+  // Serial.print("psi : ");
+  // Serial.print(psi);
   if(abs(psi) < 180){
     if(psi > 0) lTurn(psi,RIGHT);
     else lTurn(-psi,LEFT);
@@ -50,7 +50,7 @@ void CLocomotion::lGoTo(int x, int y, bool detection)
     else lTurn(360+psi,RIGHT);
   }
   
-  Serial.println("Avancer");
+  // Serial.println("Avancer");
   delay(500);
   lAvancer(distance,FORWARD);
 }
@@ -184,32 +184,32 @@ void CLocomotion::lAvancer (unsigned int distance, int dir)
 
   
   unsigned long fPulses = DToPulses(distance);
-  Serial.print("FPULSES : ");
-  Serial.println(fPulses);
+  // Serial.print("FPULSES : ");
+  // Serial.println(fPulses);
   m_etat.dir = dir;
   m_speedConsigne=10;
   lPositionControl(fPulses);
   lStop();
   updateCoord();
-  Serial.println(getCurrentX());
-  Serial.println(getCurrentY());
-  Serial.println(getCurrentTheta());
-  Serial.println(m_dPulses);
-  Serial.println(m_mPulses);
+  // Serial.println(getCurrentX());
+  // Serial.println(getCurrentY());
+  // Serial.println(getCurrentTheta());
+  // Serial.println(m_dPulses);
+  // Serial.println(m_mPulses);
 
 } 
 
 void CLocomotion::lTurn (unsigned int angle, int dir)
 {
-  Serial.println("ENTER LTURN");
-  Serial.println(angle);
+  // Serial.println("ENTER LTURN");
+  // Serial.println(angle);
   if (angle == 0) {
-    Serial.println("RETURN1");
+    // Serial.println("RETURN1");
     return;
   }
-  Serial.println("RESET");
+  // Serial.println("RESET");
   resetPulses();
-  Serial.println("TEST2");
+  // Serial.println("TEST2");
   // if(m_flag) {
   //   Serial.println("LSTOP");
   //   lStop();
@@ -219,14 +219,14 @@ void CLocomotion::lTurn (unsigned int angle, int dir)
   // }
   
   unsigned long fPulses = AToPulses(angle);
-  Serial.print("FPULSES : ");
-  Serial.println(fPulses);
+  // Serial.print("FPULSES : ");
+  // Serial.println(fPulses);
   m_etat.dir = dir;
   m_speedConsigne=10;
   lAngleControl(fPulses);
   lStop();
   updateCoord();
-  Serial.println(getCurrentTheta());
+  // Serial.println(getCurrentTheta());
 }
 
 void CLocomotion::lStop()
@@ -267,24 +267,24 @@ void CLocomotion::lSpeedControl()
   int commandD;
   int commandG;
     if(abs(m_etat.dir)==1){
-      commandD = m_speedConsigne + (int)KR*m_dPulses;
-      commandG = m_speedConsigne - (int)KR*m_dPulses;
+      commandD = m_speedConsigne + (int)KPP*m_dPulses;
+      commandG = m_speedConsigne - (int)KPP*m_dPulses;
     }
     else {
-      commandD = m_speedConsigne + (int)KRT*m_dPulses;
-      commandG = m_speedConsigne - (int)KRT*m_dPulses;
+      commandD = m_speedConsigne + (int)KPPR*m_dPulses;
+      commandG = m_speedConsigne - (int)KPPR*m_dPulses;
     }
-    // Serial.print("commandD :");++
+    // Serial.print("commandD :");
     // Serial.println(commandD);
     // Serial.print("commandG :");
     // Serial.println(commandG);
 
   commandD = 15*sqrt(commandD);
-  commandG = 15*sqrt(commandG);
-  Serial.print("Droite : ");
-  Serial.println(commandD);
-  Serial.print("Gauche : ");
-  Serial.println(commandG);
+  // commandG = 15*sqrt(commandG);
+  // Serial.print("Droite : ");
+  // Serial.println(commandD);
+  // Serial.print("Gauche : ");
+  // Serial.println(commandG);
     updatePower(commandD,commandG);
     
 }
@@ -296,8 +296,8 @@ void CLocomotion::lPositionControl(unsigned long fPulses)
   for(int i = 15 ; i<SPEEDMAX && m_mPulses < fPulses && !m_flag ; i+=5){
     updatePulses();
     m_speedConsigne = i;
-    Serial.print("Consigne Pos1: ");
-    Serial.println(m_speedConsigne);
+    // Serial.print("Consigne Pos1: ");
+    // Serial.println(m_speedConsigne);
     printLPulses();
     updateEtat();
     delay(30);
@@ -309,8 +309,8 @@ void CLocomotion::lPositionControl(unsigned long fPulses)
     if(fPulses - m_mPulses < 1536 && m_speedConsigne >= SPEEDMIN) 
       m_speedConsigne-=5;
     
-    Serial.print("Consigne Pos2: ");
-    Serial.println(m_speedConsigne);
+    // Serial.print("Consigne Pos2: ");
+    // Serial.println(m_speedConsigne);
     printLPulses();
   updateEtat();
     
@@ -326,8 +326,8 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
   for(int i = 15 ; i<SPEEDMAXTURN && m_mPulses < fPulses ; i+=5){
     updatePulses();
     m_speedConsigne = i;
-    Serial.print("Consigne : TUR1");
-    Serial.println(m_speedConsigne);
+    // Serial.print("Consigne : TUR1");
+    // Serial.println(m_speedConsigne);
     printLPulses();
     updateEtat();
     delay(30);
@@ -338,8 +338,8 @@ void CLocomotion::lAngleControl(unsigned long fPulses)
     if(fPulses - m_mPulses < 400 && m_speedConsigne >= SPEEDMINTURN) 
       m_speedConsigne-=5;
     
-    Serial.print("Consigne TUR2: ");
-    Serial.println(m_speedConsigne);
+    // Serial.print("Consigne TUR2: ");
+    // Serial.println(m_speedConsigne);
     printLPulses();
   updateEtat();
     
@@ -419,21 +419,21 @@ void CLocomotion::updateCoord()
 
     case FORWARD :
       {
-        Serial.print("m_mPulses : ");
-        Serial.println(m_mPulses);
+        // Serial.print("m_mPulses : ");
+        // Serial.println(m_mPulses);
         unsigned int distance = toDistance(m_mPulses);
-        Serial.print("distance : ");
-        Serial.println(distance);
+        // Serial.print("distance : ");
+        // Serial.println(distance);
         m_etat.x += distance*cos(getCurrentTheta()*PI/180);
-        Serial.print("x : ");
-        Serial.println(m_etat.x);
+        // Serial.print("x : ");
+        // Serial.println(m_etat.x);
         m_etat.y += distance*sin(getCurrentTheta()*PI/180);
-        Serial.print("y : ");
-        Serial.println(m_etat.y);
-        Serial.print("m_dPulses : ");
-        Serial.println(m_dPulses);
+        // Serial.print("y : ");
+        // Serial.println(m_etat.y);
+        // Serial.print("m_dPulses : ");
+        // Serial.println(m_dPulses);
         m_etat.theta +=toAngle(m_dPulses);
-        Serial.println(m_etat.theta);
+        // Serial.println(m_etat.theta);
       }
      break;
 
@@ -451,7 +451,7 @@ void CLocomotion::updateCoord()
       Serial.println(m_etat.theta);
       while(m_etat.theta>=360) m_etat.theta-= 360;
       while(m_etat.theta<0) m_etat.theta+= 360;
-      Serial.println(m_etat.theta);
+      // Serial.println(m_etat.theta);
       break;
 
     case LEFT :
