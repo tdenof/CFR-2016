@@ -38,17 +38,17 @@
 #define PIN_B2 21
 
 //Control
-#define KP 1
+#define KP 0.5F
 #define KI	0.1F
-#define KD	0
+#define KD	0.1F
 #define KPP 1
 #define KPI 0
 #define KPD 0
-#define KPPR 1.2F //polar control
-#define SPEEDMAX 120
-#define SPEEDMIN 60
-#define SPEEDMAXTURN 120
-#define SPEEDMINTURN 70
+#define KPPR 1 //polar control
+#define SPEEDMAX 23
+#define SPEEDMIN 5
+#define SPEEDMAXTURN 25
+#define SPEEDMINTURN 5
 
 //direction
 #define FORWARD 1
