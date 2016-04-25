@@ -6,8 +6,8 @@
 #include <Arduino.h>
 
 CLocomotion::CLocomotion() :  m_etat({X_INIT,Y_INIT,THETA_INIT,SPEED_INIT,DIR_INIT}), 
-m_moteurD(PIN_M1IN1,PIN_M1IN2,PIN_M1PWM), 
-m_moteurG(PIN_M2IN1,PIN_M2IN2,PIN_M2PWM), 
+m_moteurD(PIN_M2IN1,PIN_M2IN2,PIN_M2PWM), 
+m_moteurG(PIN_M1IN1,PIN_M1IN2,PIN_M1PWM), 
 m_encodeurD(PIN_A1,PIN_B1), m_encodeurG(PIN_A2,PIN_B2), 
 m_speedConsigne(0), m_speedErrorSum(0), m_speedErrorPrev(0),m_flag(false), m_mPulses(0), m_dPulses(0)
 {
@@ -184,8 +184,8 @@ void CLocomotion::lAvancer (unsigned int distance, int dir)
 
   
   unsigned long fPulses = DToPulses(distance);
-  // Serial.print("FPULSES : ");
-  // Serial.println(fPulses);
+  Serial.print("FPULSES : ");
+  Serial.println(fPulses);
   m_etat.dir = dir;
   m_speedConsigne=10;
   lPositionControl(fPulses);
@@ -257,22 +257,22 @@ void CLocomotion::printLPulses()
 
 void CLocomotion::lSpeedControl()
 {
-    // int speedError = m_speedConsigne - m_etat.speed; //error
-    // // Serial.print("Error : ");
-    // // Serial.println(speedError);
-    // m_speedErrorSum += speedError; //integration
-    // int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
-    // m_speedErrorPrev = speedError;
-    // int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
+    int speedError = m_speedConsigne - m_etat.speed; //error
+    // Serial.print("Error : ");
+    // Serial.println(speedError);
+    m_speedErrorSum += speedError; //integration
+    int speedErrorDerivative = speedError - m_speedErrorPrev;// action derivee
+    m_speedErrorPrev = speedError;
+    int command = KP*speedError + KI*m_speedErrorSum + KD*m_speedErrorPrev;
   int commandD;
   int commandG;
     if(abs(m_etat.dir)==1){
-      commandD = m_speedConsigne + (int)KPP*m_dPulses;
-      commandG = m_speedConsigne - (int)KPP*m_dPulses;
+      commandD = m_speedConsigne - (int)KPP*m_dPulses;
+      commandG = m_speedConsigne + (int)KPP*m_dPulses;
     }
     else {
-      commandD = m_speedConsigne + (int)KPPR*m_dPulses;
-      commandG = m_speedConsigne - (int)KPPR*m_dPulses;
+      commandD = m_speedConsigne - (int)KPPR*m_dPulses;
+      commandG = m_speedConsigne + (int)KPPR*m_dPulses;
     }
     // Serial.print("commandD :");
     // Serial.println(commandD);
@@ -280,11 +280,11 @@ void CLocomotion::lSpeedControl()
     // Serial.println(commandG);
 
   commandD = 15*sqrt(commandD);
-  // commandG = 15*sqrt(commandG);
-  // Serial.print("Droite : ");
-  // Serial.println(commandD);
-  // Serial.print("Gauche : ");
-  // Serial.println(commandG);
+  commandG = 15*sqrt(commandG);
+  Serial.print("Droite : ");
+  Serial.println(commandD);
+  Serial.print("Gauche : ");
+  Serial.println(commandG);
     updatePower(commandD,commandG);
     
 }
@@ -306,7 +306,7 @@ void CLocomotion::lPositionControl(unsigned long fPulses)
   while(m_mPulses < fPulses && !m_flag ){
     updatePulses();
     
-    if(fPulses - m_mPulses < 1536 && m_speedConsigne >= SPEEDMIN) 
+    if(fPulses - m_mPulses < 536 && m_speedConsigne >= SPEEDMIN) 
       m_speedConsigne-=5;
     
     // Serial.print("Consigne Pos2: ");
@@ -360,12 +360,12 @@ void CLocomotion::updatePower(int power)
       m_moteurD.updatePower(-power);
       break;
     case RIGHT :
-      m_moteurG.updatePower(power);
-      m_moteurD.updatePower(-power);
-      break;
-    case LEFT :
       m_moteurG.updatePower(-power);
       m_moteurD.updatePower(power);
+      break;
+    case LEFT :
+      m_moteurG.updatePower(power);
+      m_moteurD.updatePower(-power);
       break;
      }
 }
@@ -382,12 +382,12 @@ void CLocomotion::updatePower(int powerD, int powerG)
       m_moteurD.updatePower(-powerD);
       break;
     case RIGHT :
-      m_moteurG.updatePower(powerG);
-      m_moteurD.updatePower(-powerD);
-      break;
-    case LEFT :
       m_moteurG.updatePower(-powerG);
       m_moteurD.updatePower(powerD);
+      break;
+    case LEFT :
+      m_moteurG.updatePower(powerG);
+      m_moteurD.updatePower(-powerD);
       break;
      }
 }

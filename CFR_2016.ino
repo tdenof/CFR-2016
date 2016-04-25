@@ -24,11 +24,12 @@ void setup()
 
 void loop()
 {
+  delay(2000);
   while(robot.etatTirette()){
     delay(50);
   }
 
-  robot.goTo(0,400,false);
+  robot.turn(90,RIGHT);
     
 
   while(1){

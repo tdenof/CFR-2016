@@ -38,7 +38,7 @@
 #define PIN_B2 21
 
 //Control
-#define KP 2
+#define KP 1
 #define KI	0
 #define KD	0
 #define KPP 1
