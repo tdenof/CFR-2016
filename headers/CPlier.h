@@ -10,8 +10,8 @@ class CPlier
         CPlier();
         virtual ~CPlier();
         void open();
-        void open(int angle);
         void close();
+        void straight();
         void init();
 
     protected:

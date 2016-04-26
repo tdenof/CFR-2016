@@ -75,8 +75,8 @@ void CRobot::openPlier(){
   m_plier.open();
 }
 
-void CRobot::openPlier(int angle){
-  m_plier.open(angle);
+void CRobot::straightPlier(){
+  m_plier.straight();
 }
 
 void CRobot::closePlier(){

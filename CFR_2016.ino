@@ -24,13 +24,13 @@ void setup()
 
 void loop()
 {
+  delay(2000);
   while(robot.etatTirette()){
     delay(50);
   }
-
-  robot.goTo(0,400,false);
-  robot.goTo(0,800,false);
-  
+  robot.openPlier();
+  delay(3000);
+  robot.straightPlier();
 
   
 
