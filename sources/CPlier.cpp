@@ -13,24 +13,26 @@ CPlier::~CPlier()
 void CPlier::init(){
 	m_idG = ID_PINCEG;
 	m_idD = ID_PINCED;
+	close();
 }
 
 void CPlier::open()
 {
-	m_servo.WritePos(m_idG,20,200);
-	delay(100);
-	m_servo.WritePos(m_idD,980,200);
+	m_servo.WritePos(m_idG,400,150);
+	delay(1000);
+	m_servo.WritePos(m_idD,912,150);
 }
 
-void CPlier::open(int angle)
+void CPlier::straight()
 {
-	m_servo.WritePos(m_idG,angle,200);
-	m_servo.WritePos(m_idD,angle,200);
+	m_servo.WritePos(m_idG,480,150);
+	delay(1000);
+	m_servo.WritePos(m_idD,840,150);
 }
 
 void CPlier::close()
 {
-	m_servo.WritePos(m_idG,230,200);
-	delay(100);
-	m_servo.WritePos(m_idD,820,200);
+	m_servo.WritePos(m_idD,540,150);
+	delay(1000);
+	m_servo.WritePos(m_idG,765,150);
 }
