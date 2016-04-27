@@ -25,15 +25,39 @@ void setup()
 
 void loop()
 {
+  delay(2000);
   while(robot.etatTirette()){
     delay(50);
   }
 
-  robot.goTo(0,400,false);
-  robot.goTo(0,800,false);
-  
+  robot.goTo(0,500,false);
+  delay(500);
+  robot.goTo(-500,500,false);
+  delay(500);
+  robot.goTo(-500,0,false);
+  delay(500);
+  robot.goTo(0,0,false);
+  delay(500);
+  robot.avancer(500,FORWARD);
+  delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+  // robot.avancer(400,FORWARD);
+  // robot.avancer(500,FORWARD);
+  // delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+  // robot.avancer(500,FORWARD);
+  // delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+  // robot.avancer(500,FORWARD);
+  // delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
 
-  
+
+    
 
   while(1){
     Serial.println("FINISH");

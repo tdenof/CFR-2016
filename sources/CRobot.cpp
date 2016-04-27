@@ -15,6 +15,8 @@ void CRobot::initRobot()
 {
     
     m_plier.init();
+    delay(2000);
+    m_rod.init();
     m_capteurIR.initCapteur();
     m_tirette.initTirette();
     m_locomotion.lStop();
@@ -75,12 +77,27 @@ void CRobot::openPlier(){
   m_plier.open();
 }
 
-void CRobot::openPlier(int angle){
-  m_plier.open(angle);
+void CRobot::straightPlier(){
+  m_plier.straight();
 }
 
 void CRobot::closePlier(){
   m_plier.close();
+}
+
+void CRobot::deployRod()
+{
+  m_rod.deploy();
+}
+
+void CRobot::deployRod(int angle)
+{
+  m_rod.deploy(angle);
+}
+
+void CRobot::undeployRod()
+{
+  m_rod.undeploy();
 }
 
 void CRobot::printPulses()

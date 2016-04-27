@@ -24,8 +24,11 @@ class CRobot
         void stop();
         void goTo(int x, int y, bool detection);
         void openPlier();
-        void openPlier(int angle);
+        void straightPlier();
         void closePlier();
+        void deployRod();
+        void deployRod(int angle);
+        void undeployRod();
         void printPulses();
         void robotA1Interrupt();
         void robotB1Interrupt();
