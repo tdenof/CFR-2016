@@ -47,7 +47,7 @@
 #define KPPR 1 //polar control
 #define SPEEDMAX 23
 #define SPEEDMIN 5
-#define SPEEDMAXTURN 25
+#define SPEEDMAXTURN 20
 #define SPEEDMINTURN 5
 
 //direction

@@ -400,6 +400,8 @@ void CLocomotion::resetPulses()
 {
    m_encodeurD.reset();
    m_encodeurG.reset();
+   m_etat.speed=0;
+   m_etat.pulses=0;
    m_mPulses = 0;
    m_speedErrorPrev = 0;
    m_speedErrorSum = 0;
