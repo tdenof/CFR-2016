@@ -1,6 +1,6 @@
 #include "../headers/CRod.h"
 
-CRod::CRod(): m_idG(ID_PINCEG), m_idD(ID_PINCED)
+CRod::CRod(): m_idL(ID_RODL), m_idH(ID_RODH)
 {
     //ctor
 }
@@ -10,20 +10,29 @@ CRod::~CRod()
     //dtor
 }
 
-void CRod::open()
+void CRod::init()
 {
-	m_servo.WritePos(m_idG,90,150);
-	m_servo.WritePos(m_idD,90,150);
+	undeploy();
 }
 
-void CRod::open(int angle)
+void CRod::deploy()
 {
-	m_servo.WritePos(m_idG,angle,150);
-	m_servo.WritePos(m_idD,angle,150);
+	m_servo.WritePos(m_idL,780,100);
+	delay(1000);
+	m_servo.WritePos(m_idH,200,100);
 }
 
-void CRod::close()
+void CRod::deploy(int angle)
 {
-	m_servo.WritePos(m_idG,0,150);
-	m_servo.WritePos(m_idD,0,150);
+	m_servo.WritePos(m_idL,angle,100);
+	delay(1000);
+	m_servo.WritePos(m_idH,200,100);
+}
+
+
+void CRod::undeploy()
+{
+	m_servo.WritePos(m_idL,512,100);
+	delay(1000);
+	m_servo.WritePos(m_idH,512,100);
 }

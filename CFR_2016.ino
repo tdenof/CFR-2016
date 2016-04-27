@@ -31,6 +31,10 @@ void loop()
   robot.openPlier();
   delay(3000);
   robot.straightPlier();
+  delay(2000);
+  robot.deployRod();
+  delay(3000);
+  robot.undeployRod();
 
   
 
