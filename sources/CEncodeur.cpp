@@ -18,7 +18,7 @@ CEncodeur::~CEncodeur()
 }
 
 
-long CEncodeur::getPulseCount()
+long CEncodeur::pulseCountValue()
 {
   return m_pulseCount;
 }

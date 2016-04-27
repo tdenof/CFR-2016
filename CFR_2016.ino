@@ -1,5 +1,4 @@
 #include "headers/CRobot.h"
-
 #include "headers/TimerThree.h"
 #include "headers/TimerFive.h"
 
@@ -18,6 +17,7 @@ void setup()
   Timer5.initialize(20000);
   Timer5.attachInterrupt(obstacleDetection);
   Timer5.stop();
+  Serial3.begin(1000000);
   robot.initRobot();
   Serial.begin(115200);
 }
@@ -25,8 +25,38 @@ void setup()
 void loop()
 {
   delay(2000);
-  robot.goTo(-200,-400,true);
-  
+  while(robot.etatTirette()){
+    delay(50);
+  }
+
+  robot.goTo(0,500,false);
+  delay(500);
+  robot.goTo(-500,500,false);
+  delay(500);
+  robot.goTo(-500,0,false);
+  delay(500);
+  robot.goTo(0,0,false);
+  delay(500);
+  robot.avancer(500,FORWARD);
+  delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+  // robot.avancer(400,FORWARD);
+  // robot.avancer(500,FORWARD);
+  // delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+  // robot.avancer(500,FORWARD);
+  // delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+  // robot.avancer(500,FORWARD);
+  // delay(1000);
+  // robot.turn(90,LEFT);
+  // delay(1000);
+
+
+    
 
   while(1){
     Serial.println("FINISH");

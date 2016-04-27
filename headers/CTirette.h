@@ -8,7 +8,7 @@ class CTirette
         CTirette();
         virtual ~CTirette();
         void initTirette();
-        int etat();
+        bool etat();
         void printEtat();
     protected:
     private:

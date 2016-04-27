@@ -17,9 +17,9 @@ void CTirette::initTirette()
     pinMode(m_Tpin,INPUT_PULLUP);
 }
 
-int CTirette::etat()
+bool CTirette::etat()
 {
-  int etat = digitalRead(m_Tpin);
+  bool etat = digitalRead(m_Tpin);
   return !etat;
 }
 
