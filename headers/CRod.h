@@ -9,14 +9,15 @@ class CRod
     public:
         CRod();
         virtual ~CRod();
-        void open();
-        void open(int angle);
-        void close();
+        void deploy();
+        void deploy(int angle);
+        void undeploy();
+        void init();
 
     protected:
     private:
 
-    int m_idG, m_idD;
+    int m_idL, m_idH;
     CDS5500 m_servo;
 };
 
