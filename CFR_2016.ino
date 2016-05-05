@@ -38,8 +38,12 @@ void loop()
     delay(3000);
     robot.goTo(0,400,false);
     delay(500);
-    robot.goTo(-15,800,false);
+    robot.straightPlier();
+    delay(3000);
+    robot.goTo(-100,900,false);
     delay(500);
+    robot.openPlier();
+    delay(3000);
 }
   else{
     Serial.println("PURPLE");
@@ -47,8 +51,12 @@ void loop()
     delay(3000);
     robot.goTo(0,400,false);
     delay(500);
-    robot.goTo(15,800,false);
+    robot.straightPlier();
+    delay(3000);
+    robot.goTo(100,800,false);
     delay(500);
+    robot.openPlier();
+    delay(3000);
   }
 
 
