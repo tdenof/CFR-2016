@@ -28,11 +28,28 @@ void loop()
   while(robot.etatTirette()){
     delay(50);
   }
-  Serial.println("goTo(0,400");
-  robot.goTo(0,400,false);
-  delay(500);
-  robot.goTo(-15,800,false);
-  delay(500);
+  while(robot.getColor() == 0){
+    delay(50);
+  }
+
+  if(robot.getColor()==1){
+    Serial.println("GREEN");
+    robot.openPlier();
+    delay(3000);
+    robot.goTo(0,400,false);
+    delay(500);
+    robot.goTo(-15,800,false);
+    delay(500);
+}
+  else{
+    Serial.println("PURPLE");
+    robot.openPlier();
+    delay(3000);
+    robot.goTo(0,400,false);
+    delay(500);
+    robot.goTo(15,800,false);
+    delay(500);
+  }
 
 
 

@@ -3,7 +3,7 @@
 
 #define WHEEL_DIAMETER 118L
 #define BASE_DIAMETER 320L
-#define PIN_TIRETTE 45
+#define PIN_TIRETTE 43
 #define PIN_CAPTEURD A2
 #define PIN_CAPTEURG A3
 #define PIN_SERVO 12
@@ -15,6 +15,9 @@
 #define DIR_INIT 0
 #define NBZONEINTERDITE 1
 
+//switch
+#define PIN_SWA 44
+#define PIN_SWB 45
 //Plier
 #define ID_PINCED 1
 #define ID_PINCEG 3

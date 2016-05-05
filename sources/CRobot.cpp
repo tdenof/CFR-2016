@@ -13,7 +13,7 @@ CRobot::~CRobot()
 
 void CRobot::initRobot()
 {
-    
+    m_switch.init();
     m_plier.init();
     delay(2000);
     m_rod.init();
@@ -21,12 +21,19 @@ void CRobot::initRobot()
     m_capteurIRG.initCapteur();
     m_tirette.initTirette();
     m_locomotion.lStop();
+    m_color = m_switch.color();
 
 }
 
 void CRobot::servoPos(int pos)
 {
   
+}
+
+int CRobot::getColor()
+{
+  if (m_color == 0) m_color = m_switch.color();
+  return m_color;
 }
 
 bool CRobot::etatTirette()
