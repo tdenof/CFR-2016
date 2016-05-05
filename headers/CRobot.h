@@ -23,6 +23,7 @@ class CRobot
         void turn(unsigned int angle, int dir);
         void stop();
         void goTo(int x, int y, bool detection);
+        void goTo(int x, int y, int angleF, bool detection);
         void openPlier();
         void straightPlier();
         void closePlier();

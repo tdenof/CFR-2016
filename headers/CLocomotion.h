@@ -29,6 +29,7 @@ class CLocomotion
         bool eviter(); // Fonction d'evitement appell��e lors de la detection d'un robot
         // MUTATEURS
         void lGoTo(int x, int y, bool detection);
+        void lGoTo(int x, int y, int angle, bool detection);
         void setFlag(bool flag);
         // ACCESSEURS
         int getCurrentX();

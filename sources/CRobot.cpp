@@ -73,6 +73,15 @@ void CRobot::goTo(int x, int y, bool detection)
   Timer5.stop();
 }
 
+void CRobot::goTo(int x, int y, int angleF, bool detection)
+{
+  do{
+    m_locomotion.lGoTo(x,y,angleF, detection);
+    Serial.println(m_locomotion.getFlag());
+  }while(m_locomotion.getFlag());
+  Timer5.stop();
+}
+
 void CRobot::openPlier(){
   m_plier.open();
 }

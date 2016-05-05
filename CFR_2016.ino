@@ -35,7 +35,7 @@ void loop()
   delay(500);
   robot.goTo(500,0,false);
   delay(500);
-  robot.goTo(0,0,false);
+  robot.goTo(0,0,90,false);
   delay(500);
   
   // robot.deployRod();
