@@ -17,16 +17,16 @@ void CRod::init()
 
 void CRod::deploy()
 {
-	m_servo.WritePos(m_idL,780,100);
+	m_servo.WritePos(m_idL,200,100);
 	delay(1000);
-	m_servo.WritePos(m_idH,200,100);
+	m_servo.WritePos(m_idH,800,100);
 }
 
 void CRod::deploy(int angle)
 {
 	m_servo.WritePos(m_idL,angle,100);
 	delay(1000);
-	m_servo.WritePos(m_idH,200,100);
+	m_servo.WritePos(m_idH,800,100);
 }
 
 

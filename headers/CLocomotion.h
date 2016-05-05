@@ -53,7 +53,8 @@ class CLocomotion
         void locomotionA1Interrupt();
         void locomotionB1Interrupt();
         void locomotionA2Interrupt();
-        void locomotionB2Interrupt();       
+        void locomotionB2Interrupt(); 
+        void printCoord();      
 
     protected:
 
