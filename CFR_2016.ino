@@ -14,7 +14,7 @@ void setup()
   Timer3.initialize(20000);
   Timer3.attachInterrupt(speedControl);
   Timer3.stop();
-  Timer5.initialize(20000);
+  Timer5.initialize(10000);
   Timer5.attachInterrupt(obstacleDetection);
   Timer5.stop();
   Serial3.begin(1000000);
@@ -29,14 +29,21 @@ void loop()
     delay(50);
   }
   Serial.println("goTo(0,400");
-  robot.goTo(0,500,false);
+  robot.goTo(0,400,false);
   delay(500);
-  robot.goTo(500,500,false);
+  robot.goTo(-15,800,false);
   delay(500);
-  robot.goTo(500,0,false);
-  delay(500);
-  robot.goTo(0,0,90,false);
-  delay(500);
+
+
+
+
+
+  // robot.goTo(500,500,false);
+  // delay(500);
+  // robot.goTo(500,0,false);
+  // delay(500);
+  // robot.goTo(0,0,90,false);
+  // delay(500);
   
   // robot.deployRod();
   // delay(2000);

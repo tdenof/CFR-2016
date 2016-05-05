@@ -25,6 +25,7 @@ void CLocomotion::lGoTo(int x, int y, bool detection)
 {
   if(detection) Timer5.start();
   while(m_flag){
+    Serial.println("Blocked");
     delay(50);
   }
   float distance = sqrt(pow(x-m_etat.x,2)+pow(y-m_etat.y,2));

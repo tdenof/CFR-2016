@@ -16,8 +16,6 @@ class CRobot
         void initRobot();
         void servoPos(int pos);
         bool etatTirette();
-        int capteurIRValeur();
-        void printCapteurIR();
         void printTirette();
         void avancer(unsigned int distance, int dir);
         void turn(unsigned int angle, int dir);
@@ -42,7 +40,8 @@ class CRobot
     private:
     
     CTirette m_tirette;
-    CCapteur_IR m_capteurIR;
+    CCapteur_IR m_capteurIRD;
+    CCapteur_IR m_capteurIRG;
     CLocomotion m_locomotion;
     CPlier m_plier;
     CRod m_rod;

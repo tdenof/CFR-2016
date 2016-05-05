@@ -1,7 +1,7 @@
 #include "../headers/CRobot.h"
 #include "../headers/TimerFive.h"
 
-CRobot::CRobot()
+CRobot::CRobot(): m_capteurIRD(PIN_CAPTEURD), m_capteurIRG(PIN_CAPTEURG)
 {
     //ctor
 }
@@ -17,7 +17,8 @@ void CRobot::initRobot()
     m_plier.init();
     delay(2000);
     m_rod.init();
-    m_capteurIR.initCapteur();
+    m_capteurIRD.initCapteur();
+    m_capteurIRG.initCapteur();
     m_tirette.initTirette();
     m_locomotion.lStop();
 
@@ -31,16 +32,6 @@ void CRobot::servoPos(int pos)
 bool CRobot::etatTirette()
 {
   return m_tirette.etat();
-}
-
-int CRobot::capteurIRValeur()
-{
-  return m_capteurIR.valeur();
-}
-
-void CRobot::printCapteurIR()
-{
-  m_capteurIR.printValeur();
 }
 
 void CRobot::printTirette()
@@ -142,10 +133,9 @@ void CRobot::robotSpeedControl()
 void CRobot::robotObstacleDetection()
 {
   Serial.println("Timer5");
-  if(m_capteurIR.valeur() > SEUIL_IR) {
+  if(m_capteurIRD.valeur() > SEUIL_IR || m_capteurIRG.valeur() > SEUIL_IR) {
     m_locomotion.setFlag(true);
     Serial.println("SET FLAG!!!");
-    Serial.println(m_capteurIR.valeur());
   }
   else m_locomotion.setFlag(false);
 }

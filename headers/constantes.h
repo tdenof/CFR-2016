@@ -2,11 +2,12 @@
 #define CONSTANTES_H
 
 #define WHEEL_DIAMETER 118L
-#define BASE_DIAMETER 330L
+#define BASE_DIAMETER 320L
 #define PIN_TIRETTE 45
-#define PIN_CAPTEUR A2
+#define PIN_CAPTEURD A2
+#define PIN_CAPTEURG A3
 #define PIN_SERVO 12
-#define SEUIL_IR 250
+#define SEUIL_IR 300
 #define X_INIT 0
 #define Y_INIT 0
 #define THETA_INIT 90
@@ -19,8 +20,7 @@
 #define ID_PINCEG 3
 
 //Rod
-#define ID_RODL 2 //low
-#define ID_RODH 4 //high
+#define ID_ROD 4 //low
 
 //moteurs
 #define PIN_M1IN1 5		//droite

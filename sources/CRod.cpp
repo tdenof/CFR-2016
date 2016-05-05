@@ -1,6 +1,6 @@
 #include "../headers/CRod.h"
 
-CRod::CRod(): m_idL(ID_RODL), m_idH(ID_RODH)
+CRod::CRod(): m_id(ID_ROD)
 {
     //ctor
 }
@@ -17,22 +17,16 @@ void CRod::init()
 
 void CRod::deploy()
 {
-	m_servo.WritePos(m_idL,200,100);
-	delay(1000);
-	m_servo.WritePos(m_idH,800,100);
+	m_servo.WritePos(m_id,220,100);
 }
 
 void CRod::deploy(int angle)
 {
-	m_servo.WritePos(m_idL,angle,100);
-	delay(1000);
-	m_servo.WritePos(m_idH,800,100);
+	m_servo.WritePos(m_id,angle,100);
 }
 
 
 void CRod::undeploy()
 {
-	m_servo.WritePos(m_idL,512,100);
-	delay(1000);
-	m_servo.WritePos(m_idH,512,100);
+	m_servo.WritePos(m_id,800,100);
 }
