@@ -6,6 +6,7 @@ class CCapteur_IR
 {
     public:
         CCapteur_IR();
+        CCapteur_IR(int pin);
         virtual ~CCapteur_IR();
         void initCapteur();
         int valeur();

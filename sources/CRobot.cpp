@@ -1,7 +1,7 @@
 #include "../headers/CRobot.h"
 #include "../headers/TimerFive.h"
 
-CRobot::CRobot()
+CRobot::CRobot(): m_capteurIRD(PIN_CAPTEURD), m_capteurIRG(PIN_CAPTEURG)
 {
     //ctor
 }
@@ -13,13 +13,15 @@ CRobot::~CRobot()
 
 void CRobot::initRobot()
 {
-    
+    m_switch.init();
     m_plier.init();
     delay(2000);
     m_rod.init();
-    m_capteurIR.initCapteur();
+    m_capteurIRD.initCapteur();
+    m_capteurIRG.initCapteur();
     m_tirette.initTirette();
     m_locomotion.lStop();
+    m_color = m_switch.color();
 
 }
 
@@ -28,19 +30,15 @@ void CRobot::servoPos(int pos)
   
 }
 
+int CRobot::getColor()
+{
+  if (m_color == 0) m_color = m_switch.color();
+  return m_color;
+}
+
 bool CRobot::etatTirette()
 {
   return m_tirette.etat();
-}
-
-int CRobot::capteurIRValeur()
-{
-  return m_capteurIR.valeur();
-}
-
-void CRobot::printCapteurIR()
-{
-  m_capteurIR.printValeur();
 }
 
 void CRobot::printTirette()
@@ -68,6 +66,15 @@ void CRobot::goTo(int x, int y, bool detection)
 {
   do{
     m_locomotion.lGoTo(x,y, detection);
+    Serial.println(m_locomotion.getFlag());
+  }while(m_locomotion.getFlag());
+  Timer5.stop();
+}
+
+void CRobot::goTo(int x, int y, int angleF, bool detection)
+{
+  do{
+    m_locomotion.lGoTo(x,y,angleF, detection);
     Serial.println(m_locomotion.getFlag());
   }while(m_locomotion.getFlag());
   Timer5.stop();
@@ -133,10 +140,9 @@ void CRobot::robotSpeedControl()
 void CRobot::robotObstacleDetection()
 {
   Serial.println("Timer5");
-  if(m_capteurIR.valeur() > SEUIL_IR) {
+  if(m_capteurIRD.valeur() > SEUIL_IR || m_capteurIRG.valeur() > SEUIL_IR) {
     m_locomotion.setFlag(true);
     Serial.println("SET FLAG!!!");
-    Serial.println(m_capteurIR.valeur());
   }
   else m_locomotion.setFlag(false);
 }

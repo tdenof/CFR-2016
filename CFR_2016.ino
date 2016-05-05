@@ -15,7 +15,7 @@ void setup()
   Timer3.initialize(20000);
   Timer3.attachInterrupt(speedControl);
   Timer3.stop();
-  Timer5.initialize(20000);
+  Timer5.initialize(10000);
   Timer5.attachInterrupt(obstacleDetection);
   Timer5.stop();
   Serial3.begin(1000000);
@@ -29,17 +29,60 @@ void loop()
   while(robot.etatTirette()){
     delay(50);
   }
+  while(robot.getColor() == 0){
+    delay(50);
+  }
 
-  robot.goTo(0,500,false);
-  delay(500);
-  robot.goTo(-500,500,false);
-  delay(500);
-  robot.goTo(-500,0,false);
-  delay(500);
-  robot.goTo(0,0,false);
-  delay(500);
-  robot.avancer(500,FORWARD);
-  delay(1000);
+  if(robot.getColor()==1){
+    Serial.println("GREEN");
+    robot.openPlier();
+    delay(3000);
+    robot.goTo(0,400,false);
+    delay(500);
+    robot.straightPlier();
+    delay(3000);
+    robot.goTo(-100,900,false);
+    delay(500);
+    robot.openPlier();
+    delay(3000);
+}
+  else{
+    Serial.println("PURPLE");
+    robot.openPlier();
+    delay(3000);
+    robot.goTo(0,400,false);
+    delay(500);
+    robot.straightPlier();
+    delay(3000);
+    robot.goTo(100,800,false);
+    delay(500);
+    robot.openPlier();
+    delay(3000);
+  }
+
+
+
+
+
+  // robot.goTo(500,500,false);
+  // delay(500);
+  // robot.goTo(500,0,false);
+  // delay(500);
+  // robot.goTo(0,0,90,false);
+  // delay(500);
+  
+  // robot.deployRod();
+  // delay(2000);
+  
+
+  // robot.deployRod(400);
+  // delay(1000);
+  // robot.goTo(0,900,false);
+  // delay(500);
+  // robot.deployRod();
+  // delay(1000);
+  // robot.turn(90,2);
+  
   // robot.turn(90,LEFT);
   // delay(1000);
   // robot.avancer(400,FORWARD);

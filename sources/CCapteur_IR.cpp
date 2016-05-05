@@ -3,8 +3,13 @@
 #include <Arduino.h>
 CCapteur_IR::CCapteur_IR()
 {
-   m_Cpin = PIN_CAPTEUR;
     //ctor
+}
+
+CCapteur_IR::CCapteur_IR(int pin)
+{
+    //ctor
+    m_Cpin = pin;
 }
 
 CCapteur_IR::~CCapteur_IR()

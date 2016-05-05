@@ -17,7 +17,7 @@ class CRod
     protected:
     private:
 
-    int m_idL, m_idH;
+    int m_id;
     CDS5500 m_servo;
 };
 
