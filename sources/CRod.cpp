@@ -10,9 +10,10 @@ CRod::~CRod()
     //dtor
 }
 
-void CRod::init()
+void CRod::init(int color)
 {
-	undeploy();
+	if(color ==1) deploy();
+	else undeploy();
 }
 
 void CRod::deploy()

@@ -30,6 +30,7 @@ class CLocomotion
         // MUTATEURS
         void lGoTo(int x, int y, bool detection);
         void lGoTo(int x, int y, int angle, bool detection);
+        void lGoTo(int x, int y, bool detection, int dir);
         void setFlag(bool flag);
         // ACCESSEURS
         int getCurrentX();
@@ -38,6 +39,7 @@ class CLocomotion
         int getCurrentSpeed();
         bool getFlag();
         etatLocomotion getCurrentState();
+        bool inPosition(int x, int y);
         void lAvancer(unsigned int distance, int speed);
         void lTurn(unsigned int angle, int speed);
         void lStop();

@@ -6,8 +6,10 @@
 #define PIN_TIRETTE 43
 #define PIN_CAPTEURD A2
 #define PIN_CAPTEURG A3
+#define PIN_CAPTEURA A4
 #define PIN_SERVO 12
 #define SEUIL_IR 300
+#define SEUIL_IRA 350
 #define X_INIT 0
 #define Y_INIT 0
 #define THETA_INIT 90
