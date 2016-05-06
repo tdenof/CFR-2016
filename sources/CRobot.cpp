@@ -1,7 +1,8 @@
 #include "../headers/CRobot.h"
 #include "../headers/TimerFive.h"
 
-CRobot::CRobot(): m_capteurIRD(PIN_CAPTEURD), m_capteurIRG(PIN_CAPTEURG)
+CRobot::CRobot(): m_capteurIRD(PIN_CAPTEURD), m_capteurIRG(PIN_CAPTEURG),
+m_capteurIRA(PIN_CAPTEURA)
 {
     //ctor
 }
@@ -14,9 +15,10 @@ CRobot::~CRobot()
 void CRobot::initRobot()
 {
     m_switch.init();
+    getColor();
     m_plier.init();
     delay(2000);
-    m_rod.init();
+    m_rod.init(m_color);
     m_capteurIRD.initCapteur();
     m_capteurIRG.initCapteur();
     m_tirette.initTirette();
@@ -64,19 +66,31 @@ void CRobot::stop()
 
 void CRobot::goTo(int x, int y, bool detection)
 {
-  do{
+  m_cDir =FORWARD;
+  while(!(m_locomotion.inPosition(x,y))){
     m_locomotion.lGoTo(x,y, detection);
     Serial.println(m_locomotion.getFlag());
-  }while(m_locomotion.getFlag());
+  }
   Timer5.stop();
 }
 
 void CRobot::goTo(int x, int y, int angleF, bool detection)
 {
-  do{
+  m_cDir = FORWARD;
+  while(!(m_locomotion.inPosition(x,y))){
     m_locomotion.lGoTo(x,y,angleF, detection);
     Serial.println(m_locomotion.getFlag());
-  }while(m_locomotion.getFlag());
+  }
+  Timer5.stop();
+}
+
+void CRobot::goTo(int x, int y, bool detection, int dir)
+{
+  m_cDir = dir;
+  while(!(m_locomotion.inPosition(x,y))){
+    m_locomotion.lGoTo(x,y, detection, dir);
+    Serial.println(m_locomotion.getFlag());
+  }
   Timer5.stop();
 }
 
@@ -140,9 +154,18 @@ void CRobot::robotSpeedControl()
 void CRobot::robotObstacleDetection()
 {
   Serial.println("Timer5");
-  if(m_capteurIRD.valeur() > SEUIL_IR || m_capteurIRG.valeur() > SEUIL_IR) {
-    m_locomotion.setFlag(true);
-    Serial.println("SET FLAG!!!");
+  if(m_cDir != BACKWARD){
+    if(m_capteurIRD.valeur() > SEUIL_IR || m_capteurIRG.valeur() > SEUIL_IR) {
+      m_locomotion.setFlag(true);
+      Serial.println("SET FLAG AVV!!!");
+    }
+    else m_locomotion.setFlag(false);
   }
-  else m_locomotion.setFlag(false);
+  else {
+    if(m_capteurIRA.valeur() > SEUIL_IRA) {
+      m_locomotion.setFlag(true);
+      Serial.println("SET FLAG ARR!!!");
+    }
+    else m_locomotion.setFlag(false);
+  }
 }

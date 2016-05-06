@@ -23,6 +23,7 @@ class CRobot
         void stop();
         void goTo(int x, int y, bool detection);
         void goTo(int x, int y, int angleF, bool detection);
+        void goTo(int x, int y, bool detection, int dir);
         void openPlier();
         void straightPlier();
         void closePlier();
@@ -43,10 +44,12 @@ class CRobot
     CTirette m_tirette;
     CCapteur_IR m_capteurIRD;
     CCapteur_IR m_capteurIRG;
+    CCapteur_IR m_capteurIRA;
     CLocomotion m_locomotion;
     CPlier m_plier;
     CRod m_rod;
     int m_color;
+    int m_cDir; //command dir
 };
 
 #endif // CROBOT_H

@@ -130,6 +130,63 @@ void CLocomotion::lGoTo(int x, int y, int angleF, bool detection)
   printCoord();
 }
 
+
+void CLocomotion::lGoTo(int x, int y, bool detection, int dir)
+{
+  if(detection) Timer5.start();
+  while(m_flag){
+    Serial.println("Blocked");
+    delay(50);
+  }
+  float distance = sqrt(pow(x-m_etat.x,2)+pow(y-m_etat.y,2));
+  if(distance==0) return;
+  // Serial.print("distance : ");
+  // Serial.print(distance);
+  // //from origin to new pos
+  // int phi = (int)(asin((y-m_etat.y)/distance)*180.0F/PI);
+  // Serial.print("phi : ");
+  // Serial.print(phi);
+
+  // if(x-m_etat.x<0) phi = 180- phi;
+  // //Final theta
+  // int phiF = phi;
+  // if (phiF<0) phiF += 360;
+  // // between actual and new pos
+  // int psi = phi - m_etat.theta;
+  // Serial.print("psi : ");
+  // Serial.print(psi);
+  // if(abs(psi) < 180){
+  //   if(psi > 0) lTurn(psi,RIGHT);
+  //   else lTurn(-psi,LEFT);
+  // }
+  // else{
+  //   if(psi > 0) lTurn(360-psi,LEFT);
+  //   else lTurn(360+psi,RIGHT);
+  // }
+  // printCoord();
+  // // Serial.println("Avancer");
+  // delay(500);
+  lAvancer(distance,BACKWARD);
+  printCoord();
+  //Correct final angle
+  // delay(500);
+  // Serial.println("Correct FINAL THETA");
+  // int corTheta = getCurrentTheta() - phiF;
+  // if(abs(corTheta)<180){
+  //   if(corTheta <0) lTurn(- corTheta,RIGHT);
+  //   else{
+  //     if (corTheta > 0) lTurn(corTheta,LEFT);
+  //   }
+  // }
+  // else {
+  //   if(corTheta <0) lTurn(360+corTheta,LEFT);
+  //   else{
+  //     if (corTheta > 0) lTurn(360-corTheta,RIGHT);
+  //   }
+  // }
+  // printCoord();
+}
+
 void CLocomotion::setFlag(bool flag)
 {
   m_flag=flag;
@@ -140,6 +197,21 @@ etatLocomotion CLocomotion::getCurrentState()
     etatLocomotion pos;
     pos = {getCurrentX(),getCurrentY(),getCurrentTheta(),getCurrentSpeed()};
     return pos;
+}
+
+bool CLocomotion::inPosition(int x, int y)
+{
+  Serial.println("TEST POSITION");
+  if ((abs(getCurrentX()-x)) < 100 && (abs(getCurrentY()-y)) < 100){
+    Serial.println("IN POSITION");
+    Serial.println(abs(getCurrentX()-x));
+    Serial.println(abs(getCurrentY()-y));
+    return true;
+  }
+  else {
+    Serial.println("NOT POSITION");
+    return false;
+  }
 }
 
 bool CLocomotion::eviter()
@@ -249,11 +321,16 @@ bool CLocomotion::getFlag()
 
 void CLocomotion::lAvancer (unsigned int distance, int dir)
 {
+  Serial.println("ENTER LAVANCER");
+  Serial.println(distance);
+
   if (distance == 0) return;
   
   resetPulses();
   if(m_flag) {
     lStop();
+    updatePulses();
+    updateCoord();
     return;
   }
 
@@ -280,8 +357,8 @@ void CLocomotion::lAvancer (unsigned int distance, int dir)
 
 void CLocomotion::lTurn (unsigned int angle, int dir)
 {
-  // Serial.println("ENTER LTURN");
-  // Serial.println(angle);
+  Serial.println("ENTER LTURN");
+  Serial.println(angle);
   if (angle == 0) {
     // Serial.println("RETURN1");
     return;

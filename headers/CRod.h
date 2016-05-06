@@ -12,7 +12,7 @@ class CRod
         void deploy();
         void deploy(int angle);
         void undeploy();
-        void init();
+        void init(int color);
 
     protected:
     private:
