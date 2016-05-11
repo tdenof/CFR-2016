@@ -63,7 +63,7 @@ void loop()
        delay(1000);
      }
     }
-    robot.goTo(-850,420,90,true);
+    robot.goTo(-900,500,90,true);
     delay(500);
     tInstant = millis();
     if(tInstant-tInitial > 80000){
@@ -79,7 +79,7 @@ void loop()
        delay(1000);
      }
     }
-    robot.goTo(-850,750,90,true);
+    robot.goTo(-900,750,90,true);
     delay(500);
     tInstant = millis();
     if(tInstant-tInitial > 80000){
@@ -87,7 +87,80 @@ void loop()
        delay(1000);
      }
     }
-    robot.deployRod(400);
+    robot.deployRod(600);
+    delay(2000);
+
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(-850,1000,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.deployRod();
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.turn(90,RIGHT);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.undeployRod();
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(-600,300,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(-900,580,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.deployRod();
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(-900,800,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.deployRod(600);
     delay(2000);
 
 }
@@ -119,7 +192,7 @@ void loop()
        delay(1000);
      }
     }
-    robot.goTo(850,420,90,true);
+    robot.goTo(900,500,90,true);
     delay(500);
     tInstant = millis();
     if(tInstant-tInitial > 80000){
@@ -135,7 +208,79 @@ void loop()
        delay(1000);
      }
     }
-    robot.goTo(850,750,90,true);
+    robot.goTo(900,750,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.deployRod(400);
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(850,1000,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.deployRod();
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.turn(90,RIGHT);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.undeployRod();
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(600,300,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(900,580,90,true);
+    delay(500);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.deployRod();
+    delay(2000);
+    tInstant = millis();
+    if(tInstant-tInitial > 80000){
+      while(1){
+       delay(1000);
+     }
+    }
+    robot.goTo(900,800,90,true);
     delay(500);
     tInstant = millis();
     if(tInstant-tInitial > 80000){
